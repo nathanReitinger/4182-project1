@@ -42,7 +42,7 @@ python3 server.py
 - this server has a static external IP address for this class, and should work for any testing you need for this class
 - the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing!
 
-![server image](/path/to/img.jpg)
+![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
 ## User Guide
 
