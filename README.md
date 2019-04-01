@@ -48,6 +48,8 @@ python3 server.py
 ## User Guide (examples and functionality)
 
 - see also the background.md file for some information on IP layer
+- default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
+    - make sure this file does not have a trailing "\n" which is read as input and is not hex
 - fuzzing IP and Application layers: simply start the program
 - full parameters of fuzzer
 ```
@@ -60,8 +62,6 @@ usage: fuzzer.py [-h] [-ip_destination IP_DESTINATION]
 ```
 bash-3.2# python3 fuzzer.py
 ```
-
-- default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
 
 - *IP LAYER* - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
 
@@ -182,8 +182,65 @@ total: 3
 - *APPLICATION LAYER* - default random payloads
 
 ```
-hi
+bash-3.2# python3 fuzzer.py
+would you like to check if the server is running (command line IP address for server): [1] yes [2] no ---> 2
+would you like to fuzz the IP layer: [1] yes [2] no ---> 2
+would you like to fuzz the application layer: [1] yes [2] no ---> 1
+would you like to run default fuzzing: [1] yes [2] no ---> 1
+would you like to set the number of tests to run (else default): [1] yes [2] no ---> 2
+would you like a fixed payload size: [1] yes [2] no ---> 1
+would you like to set the payload size (else default): [1] yes [2] no ---> 2
+...
+<_io.StringIO object at 0x1276b24c8> True-False
+received_and_match: 0
+received_not_match: 10
+not_matched_not_received 0
+total: 10
+
+<> we can see that nothing matches because this is randomly filling in the payload
 ```
+
+- *APPLICATION LAYER* - default variable payloads
+
+```
+...
+would you like a fixed payload size: [1] yes [2] no ---> 2
+would you like to set the range of variable payload size: [1] yes [2] no ---> 1
+what is the low end of the range (e.g., 1 byte)? ---> 1
+what is the high end of the range (e.g., 10 bytes)? ---> 1000
+...
+<_io.StringIO object at 0x1276f8c18> True-False
+<_io.StringIO object at 0x1276fb828> False-False
+<_io.StringIO object at 0x1276f8e58> True-False
+<_io.StringIO object at 0x1276fb168> True-False
+<_io.StringIO object at 0x1276fb558> False-False
+<_io.StringIO object at 0x1276fb798> True-False
+<_io.StringIO object at 0x1276fb8b8> False-False
+<_io.StringIO object at 0x1276fb948> False-False
+<_io.StringIO object at 0x127702d38> True-False
+<_io.StringIO object at 0x1277021f8> True-False
+received_and_match: 0
+received_not_match: 6
+not_matched_not_received 4
+total: 10
+
+<> none matched again (these are just variable length random payloads)
+<> also, some failed to send--this is because the size is set to 1000 and exceeds acceptable bounds
+```
+
+- *APPLICATION LAYER* - payload from hex
+
+```
+...
+would you like to fuzz the application layer: [1] yes [2] no ---> 1
+would you like to run default fuzzing: [1] yes [2] no ---> 2
+...
+total: 4
+
+<> use one packet payload per line
+<> this file must be in hex format (without \x or 0x) ==> line is passed if not
+```
+
 
 ## Error handling:
 
@@ -264,6 +321,8 @@ bash-3.2# python3 fuzzer.py -ip_destination 299.299.299.299
 ```
 <> removal of file "payload_default" will throw a flag
 <> if the content of "payload_default" is piazza, invalid hex, then it fails
+<> be sure not to have any trailing \n at the end of the file! This is read as input and viewed as invalid
+
 
 bash-3.2# python3 fuzzer.py
 ==> the string in hex_pattern is not in hex!
