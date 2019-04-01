@@ -48,6 +48,13 @@ python3 server.py
 
 - that's what this is!
 - see also the background.md file for some information on IP layer
+- fuzzing IP and Application layers: simply start the program
+
+```
+bash-3.2# python3 fuzzer.py
+```
+
+  - you will be tasked picking what you want to do, just follow the prompts
 
 ## Program Functionality:
 
