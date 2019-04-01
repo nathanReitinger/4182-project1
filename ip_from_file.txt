@@ -1,3 +1,4 @@
 {'version':0x04, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':'', 'frag':0, 'time_to_live': 64, 'protocol':'tcp'}
 {'version':0x04, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':9999999, 'frag':0, 'time_to_live': 99, 'protocol':'tcp'}
 {'version':0x04, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':'', 'frag':0, 'time_to_live': 64, 'protocol':'tcp'}
+{'version':pizza, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':'', 'frag':0, 'time_to_live': 64, 'protocol':'tcp'}

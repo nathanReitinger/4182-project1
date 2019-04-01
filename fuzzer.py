@@ -22,6 +22,7 @@ import logging
 import subprocess
 import os
 import platform as p
+import socket
 
 from sniffer import *
 from helpers import *
@@ -51,8 +52,8 @@ PORT_SOURCE = 80                                                # randomly picke
 #---------------------------------------------------------------# check for default files
 try:
     DEFAULT_PAYLOAD = Path('payload_default.txt').read_text()
-    IP_FROM_FILE = Path('payload_default.txt').read_text()
-    APPLICATION_FROM_FILE = Path('payload_default.txt').read_text()
+    IP_FROM_FILE = Path('ip_from_file.txt').read_text()
+    APPLICATION_FROM_FILE = Path('application_from_file.txt').read_text()
 except:
     sys.exit("[-] please include a file named 'payload_default.txt' and 'ip_from_file.txt' and 'application_from_file.txt")
 if not all(c in string.hexdigits for c in DEFAULT_PAYLOAD):
@@ -112,7 +113,6 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
 
         with open('application_from_file.txt', 'r') as f:
             list = f.read().splitlines()
-            print(list)
             for line in list:
                 if not all(c in string.hexdigits for c in line):
                     print("[-] not hex, skipping this line ==> ", line)
@@ -131,7 +131,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
                     master_list.append(payload)
 
         for i in master_list:
-            print(i)
+            # print(i)
             TCP_send(fields, log, is_fast, payload=i)
         f.close()
         return
@@ -159,12 +159,11 @@ def IPlayer_from_file(log):
                 temp_dict = ast.literal_eval(line)
                 master_list.append(temp_dict)
             except:
-                print("this line was not correctly formatted as a dictionary:\n\n", line)
-                print("\n\nplease edit the file 'ip_from_file.txt' at this line and try again!")
+                print("[-] this line was not correctly formatted as a dictionary:\n\n", line)
                 pass
 
     for item in master_list:
-        print(item, "\n\n")
+        # print(item, "\n\n")
         TCP_send(item, log, is_fast)
     f.close()
 
@@ -408,15 +407,36 @@ def main():
 
     options = arg.parse_args()
     if options.ip_destination:
-        IP_DESTINATION = options.ip_destination
+        try:
+            print(socket.inet_aton(options.ip_destination))
+            IP_DESTINATION = options.ip_destination
+        except socket.error:
+            sys.exit("[-] invalid IP")
     if options.port_destination:
-        PORT_DESTINATION = int(options.port_destination)
+        if options.port_destination >=1 and options.port_destination <= 65535:
+            PORT_DESTINATION = int(options.port_destination)
+        else:
+            sys.exit("[-] invalid port")
     if options.ip_source:
-        IP_SOURCE = options.ip_source
+        try:
+            print(socket.inet_aton(options.ip_source))
+            IP_SOURCE = options.ip_source
+        except socket.error:
+            sys.exit("[-] invalid IP")
     if options.port_source:
-        PORT_SOURCE = int(options.port_source)
+        if options.port_source >=1 and options.port_source <= 65535:
+            PORT_SOURCE = int(options.port_source)
+        else:
+            sys.exit("[-] invalid port")
     if options.log_file_path:
-        LOG_FILE_PATH = options.log_file_path
+        # see [18]
+        if os.path.exists(options.log_file_path):
+            LOG_FILE_PATH = options.log_file_path
+        elif os.access(os.path.dirname(options.log_file_path), os.W_OK):
+            LOG_FILE_PATH = options.log_file_path
+        else:
+            sys.exit("[-] invalid path")
+
 
 
     #

@@ -35,17 +35,83 @@ python3 fuzzer.py
 
 ## Error handling:
 
-- all errors should be handled by the code.
+- invalid command line arguments
+```
+bash-3.2# python3 fuzzer.py nothing to say here
+usage: fuzzer.py [-h] [-ip_destination IP_DESTINATION]
+                 [-p_destination PORT_DESTINATION] [-ip_source IP_SOURCE]
+                 [-p_source PORT_SOURCE] [-log LOG_FILE_PATH]
+fuzzer.py: error: unrecognized arguments: nothing to say here
 
- -
+<> the same is true for entering invalid arguments
 
-For example, the following random values are sent:
-`random_values = ['abracadabra', 9, '\x00', '\xff', '0x1', '\xff\xff\xff\xff\xff', float('inf'), float('-inf'), ['one'], {'two':3}]`
-- - these values are not only out of range, they are invalid
-- - the code notes this as `[-] odd value broke ACK! nothing was sent out. Moving on to next` and moves on
+```
+- missing or inaccessible files
 
-Another example:
+```
+<> assume 'ip_from_file.txt' is missing
+bash-3.2# python3 fuzzer.py
+[-] please include a file named 'payload_default.txt' and 'ip_from_file.txt' and 'application_from_file.txt
+```
 
+- invalid file contents
+
+```
+<> this for fields: {'version':pizza, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':'', 'frag':0, 'time_to_live': 64, 'protocol':'tcp'}
+<> should fail to send and not crash
+
+bash-3.2# python3 fuzzer.py
+would you like to check if the server is running (command line IP address for server): [1] yes [2] no ---> 2
+would you like to fuzz the IP layer: [1] yes [2] no ---> 1
+would you like to run all default tests with set default values: [1] yes [2] no ---> 2
+would you like to run default tests and specify the fields: [1] yes [2] no ---> 2
+would you like to run IP tests via file: [1] yes [2] no ---> 1
+[-] this line was not correctly formatted as a dictionary:
+
+ {'version':pizza, 'internet_header_length':None, 'type_of_service':1, 'length_of_packet':None, 'id_of_packet':1, 'flags':'',
+'frag':0, 'time_to_live': 64, 'protocol':'tcp'}
+
+Begin emission:
+..Finished sending 1 packets.
+.*
+Received 4 packets, got 1 answers, remaining 0 packets
+.
+Sent 1 packets.
+Begin emission:
+Finished sending 1 packets.
+...........*
+Received 12 packets, got 1 answers, remaining 0 packets
+.
+Sent 1 packets.
+Begin emission:
+.Finished sending 1 packets.
+.*
+Received 3 packets, got 1 answers, remaining 0 packets
+.
+Sent 1 packets.
+<_io.StringIO object at 0x125865b88> True-True
+False False-False
+<_io.StringIO object at 0x1258680d8> True-True
+received_and_match: 2
+received_not_match: 0
+not_matched_not_received 1
+total: 3
+bash-3.2#
+```
+
+- invalid command line arguments
+```
+<> try the fuzzer with invalid IP address
+
+bash-3.2# python3 fuzzer.py -ip_destination 299.299.299.299
+[-] invalid
+```
+
+- missing or inaccessible pattern file
+```
+<> removal of file "payload_default" will throw a flag
+<>
+```
 
 ## Clarity of the Code:
 
