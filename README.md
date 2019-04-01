@@ -20,7 +20,7 @@ chmod 777 install.sh
 sudo ./install.sh
 ```
 
-4. with the server running (see email with password) execute the program
+4. with the server running (see next section) execute the program
 
 ```
 python3 fuzzer.py
@@ -32,11 +32,17 @@ python3 fuzzer.py
 2. for the "IAM user name" enter "public-4182"
 3. for the password, enter the one I provided via email
 4. navigate to https://us-west-2.console.aws.amazon.com/cloud9/ide/d69da74bc43d4210bd9c23b3b8711e46
+5. server should already be running, but if not
+```
+python3 server.py
+```
 
 - you should now be logged in to the publicly facing ubuntu server, which should be running
 - check out the readme in the GUI's tabs and feel free to make your edits to "server.py"
 - this server has a static external IP address for this class, and should work for any testing you need for this class
 - the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing!
+
+![server image](/path/to/img.jpg)
 
 ## User Guide
 
