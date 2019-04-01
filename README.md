@@ -147,7 +147,7 @@ total: 3
 <> that file expects a syntactically correct dictionary
 <> if one of the values is incorrectly formatted, it is skipped (this is the "False False-False above")
 <> you can add your own fields this way by either copy-pasting the first one or making a new dictionary
-<> this is based around the IP.show() structure. Here it is for Clarity
+<> this is based around the IP.show() structure. Here it is for clarity
 
 ###[ IP ]###
   version   = 13
