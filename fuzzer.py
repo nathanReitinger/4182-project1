@@ -1,4 +1,4 @@
-#! /usr/bin/env python3 root
+#! /usr/bin/env python3
 
 # ███████╗██╗   ██╗███████╗███████╗███████╗██████╗
 # ██╔════╝██║   ██║╚══███╔╝╚══███╔╝██╔════╝██╔══██╗
@@ -27,9 +27,11 @@ from sniffer import *
 from helpers import *
 
 #
-# Change log level to suppress annoying IPv6 error
+# ubuntu setup
 #
+
 def ubuntu():
+    # Change log level to suppress annoying IPv6 error
     logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
     name = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
     print("this machine's IP addr:", name)
@@ -40,6 +42,7 @@ def ubuntu():
 #
 # DEFAULTS
 #
+
 IP_DESTINATION = '35.188.14.53'                                 # default server, google cloud hosted
 PORT_DESTINATION = 9090                                         # default server port
 IP_SOURCE = '127.0.0.2'                                         # this computer, localhost or anything
@@ -59,12 +62,86 @@ if not all(c in string.hexdigits for c in DEFAULT_PAYLOAD):
     # examplee: deadbeef ==> pass, this is hex
     sys.exit("[-] fuzzer will not run until valid hex is entered in payload_default.txt!")
 DEFAULT_PAYLOAD = binascii.unhexlify(DEFAULT_PAYLOAD)
-#---------------------------------------------------------------# make sure files are in hex
+#---------------------------------------------------------------#
 
 DEFAULT_FILTER = "ip and host " + IP_DESTINATION                # may be used in sniffing, not currently used
 SERVER_CHECK = True                                             # flag for checking if server is on before performing tests
 SERVER_IS_ON = False                                            # used to check if a server is ready to receive packets
 
+
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_bytes=False, variable_range=False, from_file=False):
+    """
+    - send number_of_packets to server
+    - fill the packets with random data of payload_size_bytes
+    """
+
+    # default values in place
+    default = {'version':4, 'internet_header_length':None, 'type_of_service':0x0, 'length_of_packet':None, 'id_of_packet':1, 'flags':'', 'frag':0, 'time_to_live': 64, 'protocol':'tcp', 'copy_flag':0, 'optclass':0, 'option':0}
+    fields = default.copy()
+
+    # send packets without closing TCP connection
+    is_fast = True
+
+    #
+    # check size
+    #
+
+    if payload_size_bytes:
+        size_check = binascii.b2a_hex(os.urandom(payload_size_bytes))
+        # above 730 is too large!
+        # do not do this test with variable range, that tests over whole range
+        if sys.getsizeof(size_check) >= 1495:
+            print("\n[-] too large! This is total bytes (cap is 4096):", sys.getsizeof(size_check))
+            return
+
+    #
+    # check if content from file
+    #
+
+    if from_file:
+        master_list = []
+
+        with open('application_from_file.txt', 'r') as f:
+            list = f.read().splitlines()
+            print(list)
+            for line in list:
+                if not all(c in string.hexdigits for c in line):
+                    print("[-] not hex, skipping this line ==> ", line)
+                    # example: foo ==> fail, this is not hex
+                    # examplee: deadbeef ==> pass, this is hex
+                    pass
+
+                elif (len(line) % 2 == 1):
+                    print("[-] not proper char length (of 2), passing on ==> ", line)
+                    # example: foo ==> fail, this is not hex
+                    # examplee: deadbeef ==> pass, this is hex
+                    pass
+
+                else:
+                    payload = binascii.unhexlify(line)
+                    master_list.append(payload)
+
+        for i in master_list:
+            print(i)
+            TCP_send(fields, log, is_fast, payload=i)
+        f.close()
+        return
+
+    #
+    # send packets
+    #
+
+    for i in range(number_of_packets):
+        if variable_range:
+            random_bytes = binascii.b2a_hex(os.urandom(random.randint(variable_range[0], variable_range[-1])))
+        else:
+            random_bytes = binascii.b2a_hex(os.urandom(payload_size_bytes))
+        # print(random_bytes)
+        TCP_send(fields, log, is_fast, payload=random_bytes)
+
+#------------------------------------------------------------------------------#
 def IPlayer_from_file(log):
     master_list = []
     is_fast = True
@@ -82,7 +159,9 @@ def IPlayer_from_file(log):
     for item in master_list:
         print(item, "\n\n")
         TCP_send(item, log, is_fast)
+    f.close()
 
+#------------------------------------------------------------------------------#
 def IPlayer_default_tests(log, user_specified=False):
     #####################################################
     # TODO check that these are not needing to be hex
@@ -212,8 +291,8 @@ def IPlayer_default_tests(log, user_specified=False):
         fields['length_of_packet'] = i
         TCP_send(fields, log, is_fast)
 
-
-def TCP_send(fields, log, is_fast, options=False):
+#------------------------------------------------------------------------------#
+def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
     - main send function
     """
@@ -230,10 +309,10 @@ def TCP_send(fields, log, is_fast, options=False):
             return False
     try:
         if options:
-            ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol'], options=IPOption(copy_flag=options['copy_flag'], optclass=options['optclass'], option=options['option'])) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / DEFAULT_PAYLOAD
+            ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol'], options=IPOption(copy_flag=options['copy_flag'], optclass=options['optclass'], option=options['option'])) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         else:
-            ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / DEFAULT_PAYLOAD
-        # ACK.show()
+            ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
+        ACK.show()
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
         # this occurs for too-high numbers or too-low numbers or odd data types
@@ -292,7 +371,7 @@ def main():
     # get root
     # returncode = subprocess.call(["/usr/bin/sudo", "/usr/bin/id"])    // not used, but works for ad hoc sudo bump
     if not os.geteuid() == 0:
-        sys.exit("\nonly root can run this script. use `sudo -s` and run again!\n")
+        sys.exit("\nonly root can run this script--a la scapy--use `sudo -s` or `sudo` and run again!\n")
     if (p.system()) == 'Linux':
         # set up iptables and root correctly (this step just skips it on my mac (Darwin))
         ubuntu()
@@ -328,7 +407,6 @@ def main():
     if options.port_source:
         PORT_SOURCE = int(options.port_source)
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
 
     #
     # check on server
@@ -339,7 +417,6 @@ def main():
     if ret:
         server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE)
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
 
     #
     # IP LAYER
@@ -382,7 +459,6 @@ def main():
         summary(log)
         sys.exit()
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
 
     #
     # APPLICATION LAYER
@@ -396,51 +472,63 @@ def main():
         # Application layer default tests
         #
 
-        number_of_packets = 100
-
-        question = "would you like to set the number of tests to run (else default): [1] yes [2] no"
+        question = "would you like to run default fuzzing: [1] yes [2] no"
         ret = get_input(question)
         if ret:
-            question = "how many packets would you like to send?"
-            number_of_packets = get_input_number(question)
 
-        question = "would you like a fixed payload size: [1] yes [2] no"
-        ret = get_input(question)
-        if ret:
-            # set the default and change if user wants custom
-            payload_size_bytes = 10
+            number_of_packets = 10
 
-            question = "would you like to set the payload size (else default): [1] yes [2] no"
+            question = "would you like to set the number of tests to run (else default): [1] yes [2] no"
             ret = get_input(question)
             if ret:
-                question = "how many bytes would you like the payload to be?"
-                payload_size_bytes = get_input_number(question)
+                question = "how many packets would you like to send?"
+                number_of_packets = get_input_number(question)
 
-            #### send number_of_packets with this payload size as payload_size_bytes ###
-            (number_of_packets, payload_size_bytes)
-
-        else:
-            #set the defaults, change if user wants custom
-            variable_low_end = 1
-            variable_high_end = 10
-            variable_range = []
-
-            question = "would you like to set the range of variable payload size: [1] yes [2] no"
+            question = "would you like a fixed payload size: [1] yes [2] no"
             ret = get_input(question)
             if ret:
-                question = "what is the low end of the range (e.g., 1 byte)?"
-                variable_low_end = get_input_number(question)
-                question = "what is the high end of the range (e.g., 10 bytes)?"
-                variable_high_end = get_input_number(question)
+                # set the default and change if user wants custom
+                payload_size_bytes = 10
 
-            for i in range(variable_low_end,variable_high_end):
-                variable_range.append(i)
+                question = "would you like to set the payload size (else default): [1] yes [2] no"
+                ret = get_input(question)
+                if ret:
+                    question = "how many bytes would you like the payload to be?"
+                    payload_size_bytes = get_input_number(question)
 
-            #### send number_of_packets with range of payload size as variable_range ###
+                #### send number_of_packets with this payload size as payload_size_bytes ###
+                ApplicationLayer_default_tests(log, number_of_packets, payload_size_bytes)
+                summary(log)
+
+            else:
+                #set the defaults, change if user wants custom
+                variable_low_end = 1
+                variable_high_end = 10
+                variable_range = []
+
+                question = "would you like to set the range of variable payload size: [1] yes [2] no"
+                ret = get_input(question)
+                if ret:
+                    question = "what is the low end of the range (e.g., 1 byte)?"
+                    variable_low_end = get_input_number(question)
+                    question = "what is the high end of the range (e.g., 10 bytes)?"
+                    variable_high_end = get_input_number(question)
+
+                variable_range.append(variable_low_end)
+                variable_range.append(variable_high_end)
+
+                #### send number_of_packets with range of payload size as variable_range ###
+                ApplicationLayer_default_tests(log, number_of_packets, variable_range=variable_range)
+                summary(log)
 
         #
         # Application layer by reading payload from file
         #
+
+        else:
+            # each line of file is separate test
+            ApplicationLayer_default_tests(log, from_file=True)
+            summary(log)
 
 
     #-------------------------------------------------------------------------------------------------------------------------------------#

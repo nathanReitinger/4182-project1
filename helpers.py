@@ -5,6 +5,7 @@ import sys
 import io
 import binascii
 
+
 def string2variable(string):
     capture = io.StringIO()
     save_stdout = sys.stdout    # turn off stdout
@@ -35,6 +36,8 @@ def server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE):
     - checks if a message comes back from the server
     - is naive, simple test acts like a ping to see if anything comes back
     """
+
+    print("\n[ ] checking on server at:", IP_DESTINATION, "\n")
 
     # helps server know what packets are for setup versus fuzzing
     # cc and ee are for setup: cc is server check and ee is end message from TCP ending sequence
