@@ -154,11 +154,11 @@ def get_input(question):
         print(error)
         return get_input(question)
 
-def display(item):
-    return print(item.getvalue())
 
-def post_processing(log):
-
+def post_processing(log, LOG_FILE_PATH=None):
+    """
+    - printer
+    """
     # True-True means packet was received and matching value identified
     # True-False means packet was received but pattern match failed
     # False-False means packet not received and, obviously, pattern not matched
@@ -177,9 +177,25 @@ def post_processing(log):
         if item == "False-False":
             not_matched_not_received += 1
 
-        # if item == 'False-False':
-        #     display(key)
+        if LOG_FILE_PATH and key:
+            log_it(key, item, LOG_FILE_PATH)
+
     print("received_and_match:", received_and_match)
     print("received_not_match:", received_not_match)
     print("not_matched_not_received", not_matched_not_received)
     print("total:", received_and_match + received_not_match + not_matched_not_received)
+
+def log_it(key, item, LOG_FILE_PATH):
+
+    # print(key.getvalue())
+
+    load = '        load      = '
+    index = key.getvalue().find(load)
+
+    if index:
+        f = open(LOG_FILE_PATH,"a+")
+        payload = key.getvalue()[index+len(load):-2]
+        f.write(payload + "\n")
+        f.close()
+
+    return

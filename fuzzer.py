@@ -68,7 +68,14 @@ DEFAULT_FILTER = "ip and host " + IP_DESTINATION                # may be used in
 SERVER_CHECK = True                                             # flag for checking if server is on before performing tests
 SERVER_IS_ON = False                                            # used to check if a server is ready to receive packets
 
+LOG_FILE_PATH = None                                            # path to store the log file
+                                                                # Add a command line parameter to the fuzzer to allow the user to
+                                                                # specify a log file to which the payload included in each packet
+                                                                # sent when testing the application layer will be logged and log
+                                                                # the payloads. The payload will be logged in hex.
 
+
+#------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
 def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_bytes=False, variable_range=False, from_file=False):
@@ -312,10 +319,11 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol'], options=IPOption(copy_flag=options['copy_flag'], optclass=options['optclass'], option=options['option'])) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         else:
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
-        ACK.show()
+        # ACK.show()
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
         # this occurs for too-high numbers or too-low numbers or odd data types
+        # although this is logged, it will not log payload becuase it was never sent, the logging is for testing
         # ACK.show()
         capture = string2variable(fields)
         log[capture] = "False-False"
@@ -326,6 +334,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
         # this occurs for too-high numbers or too-low numbers or odd data types
+        # although this is logged, it will not log payload becuase it was never sent, the logging is for testing
         # ACK.show()
         capture = packet2variable(ACK)
         if not capture:
@@ -357,9 +366,6 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / "the end"
             send(LASTACK)
 
-def summary(log):
-    post_processing(log)
-
 def main():
 
     #-------------------------------------------------------------------------------------------------------------------------------------#
@@ -382,7 +388,7 @@ def main():
     # setting defaults
     #
 
-    global IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE, DEFAULT_PAYLOAD, DEFAULT_FILTER, SERVER_IS_ON, SERVER_CHECK
+    global IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE, DEFAULT_PAYLOAD, SERVER_IS_ON, SERVER_CHECK, LOG_FILE_PATH
 
     # houses custom scapy packets sent to server
     # <packet, isReceived-didMatch> where result is boolean True/False-True/False
@@ -396,6 +402,7 @@ def main():
     arg.add_argument("-p_destination", action="store", dest="port_destination", help="Destination PORT - Default: 9090")
     arg.add_argument("-ip_source", action="store", dest="ip_source", help="source IP - Default: 127.0.0.1")
     arg.add_argument("-p_source", action="store", dest="port_source", help="source PORT - Default: 80")
+    arg.add_argument("-log", action="store", dest="log_file_path", help="where to store the fuzzer log - Default: None")
 
     options = arg.parse_args()
     if options.ip_destination:
@@ -406,6 +413,8 @@ def main():
         IP_SOURCE = options.ip_source
     if options.port_source:
         PORT_SOURCE = int(options.port_source)
+    if options.log_file_path:
+        LOG_FILE_PATH = options.log_file_path
 
 
     #
@@ -456,7 +465,7 @@ def main():
             IPlayer_from_file(log)
 
         # exit now, done with IP layer
-        summary(log)
+        post_processing(log, LOG_FILE_PATH)
         sys.exit()
 
 
@@ -498,7 +507,7 @@ def main():
 
                 #### send number_of_packets with this payload size as payload_size_bytes ###
                 ApplicationLayer_default_tests(log, number_of_packets, payload_size_bytes)
-                summary(log)
+                post_processing(log, LOG_FILE_PATH)
 
             else:
                 #set the defaults, change if user wants custom
@@ -519,7 +528,7 @@ def main():
 
                 #### send number_of_packets with range of payload size as variable_range ###
                 ApplicationLayer_default_tests(log, number_of_packets, variable_range=variable_range)
-                summary(log)
+                post_processing(log, LOG_FILE_PATH)
 
         #
         # Application layer by reading payload from file
@@ -528,7 +537,7 @@ def main():
         else:
             # each line of file is separate test
             ApplicationLayer_default_tests(log, from_file=True)
-            summary(log)
+            post_processing(log, LOG_FILE_PATH)
 
 
     #-------------------------------------------------------------------------------------------------------------------------------------#
