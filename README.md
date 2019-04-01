@@ -2,7 +2,7 @@
 
 ## installation
 
-~this repo~
+### this repo
 
 1. navigate to the folder you would like to put the sourcecode
 2. download the repository (https://github.com/nathanReitinger/4182-project1)
@@ -26,7 +26,7 @@ sudo ./install.sh
 python3 fuzzer.py
 ```
 
-~server~
+### server
 
 1. navitage to https://615058023285.signin.aws.amazon.com/console
 2. for the "IAM user name" enter "public-4182"
@@ -36,7 +36,7 @@ python3 fuzzer.py
 - you should now be logged in to the publicly facing ubuntu server, which should be running
 - check out the readme in the GUI's tabs and feel free to make your edits to "server.py"
 - this server has a static external IP address for this class, and should work for any testing you need for this class
-- the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing! 
+- the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing!
 
 ## User Guide
 
