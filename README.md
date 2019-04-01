@@ -62,8 +62,8 @@ bash-3.2# python3 fuzzer.py
 ```
 
 - default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
-- *examples*
-    - IP LAYER - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
+
+- *IP LAYER* - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
 
 ```
 bash-3.2# python3 fuzzer.py
@@ -94,8 +94,7 @@ total: 1224
 <> also note that fields that are too large are handled by random selections in the default case
 ```
 
-
-    - IP LAYER - fuzzing specific fields with user input
+- *IP LAYER* - fuzzing specific fields with user input
 
 ```
 bash-3.2# python3 fuzzer.py      
@@ -126,8 +125,7 @@ total: 16
 <> see background for more detail ==> version [0,15]
 ```
 
-
-    - IP LAYER - content read from hex from file
+- *IP LAYER* - content read from hex from file
 
 ```
 bash-3.2# python3 fuzzer.py
@@ -181,7 +179,11 @@ total: 3
         load      = '\xde\xad\xbe\xef\x00\x00'
 ```
 
-    - APPLICATION LAYER - default random payloads
+- *APPLICATION LAYER* - default random payloads
+
+```
+hi
+```
 
 ## Error handling:
 
