@@ -17,3 +17,18 @@ cd 4182-project1
 chmod 777 install.sh
 sudo ./install.sh
 ```
+
+4. with the server running (see email with password) execute the program
+
+```
+python3 fuzzer.py
+```
+
+## User Guide
+
+- that's what this is!
+- see also the background.md file for some information on IP layer
+
+## Program Functionality:
+
+- 
