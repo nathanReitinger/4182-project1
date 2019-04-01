@@ -46,7 +46,6 @@ python3 server.py
 
 ## User Guide
 
-- that's what this is!
 - see also the background.md file for some information on IP layer
 - fuzzing IP and Application layers: simply start the program
 
@@ -54,7 +53,12 @@ python3 server.py
 bash-3.2# python3 fuzzer.py
 ```
 
-  - you will be tasked picking what you want to do, just follow the prompts
+- you will be tasked picking what you want to do, just follow the prompts
+    - running all tests
+
+```
+
+```
 
 ## Program Functionality:
 
