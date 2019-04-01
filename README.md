@@ -37,7 +37,7 @@ python3 fuzzer.py
 
 - all errors should be handled by the code.
 
-- - 
+ -
 
 For example, the following random values are sent:
 `random_values = ['abracadabra', 9, '\x00', '\xff', '0x1', '\xff\xff\xff\xff\xff', float('inf'), float('-inf'), ['one'], {'two':3}]`
