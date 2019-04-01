@@ -32,37 +32,153 @@ python3 fuzzer.py
 2. for the "IAM user name" enter "public-4182"
 3. for the password, enter the one I provided via email
 4. navigate to https://us-west-2.console.aws.amazon.com/cloud9/ide/d69da74bc43d4210bd9c23b3b8711e46
-5. server should already be running, but if not
+5. server should already be running, but if not:
 ```
 python3 server.py
 ```
 
 - you should now be logged in to the publicly facing ubuntu server, which should be running
 - check out the readme in the GUI's tabs and feel free to make your edits to "server.py"
+- check out the "hex_pattern.txt" file which is where the hex pattern match comes from (add new hex pattern to change it)
 - this server has a static external IP address for this class, and should work for any testing you need for this class
 - the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing!
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
-## User Guide
+## User Guide (examples and functionality)
 
 - see also the background.md file for some information on IP layer
 - fuzzing IP and Application layers: simply start the program
+- full parameters of fuzzer
+```
+usage: fuzzer.py [-h] [-ip_destination IP_DESTINATION]
+                 [-p_destination PORT_DESTINATION] [-ip_source IP_SOURCE]
+                 [-p_source PORT_SOURCE] [-log LOG_FILE_PATH]
+```
+- may also simply run the fuzzer (defaults automatically applied)
 
 ```
 bash-3.2# python3 fuzzer.py
 ```
 
-- you will be tasked picking what you want to do, just follow the prompts
-    - running all tests
+- default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
+- *examples*
+    - IP LAYER - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
 
 ```
+bash-3.2# python3 fuzzer.py
+would you like to check if the server is running (command line IP address for server): [1] yes [2] no ---> 2
+would you like to fuzz the IP layer: [1] yes [2] no ---> 1
+would you like to run all default tests with set default values: [1] yes [2] no ---> 1
+on fields too large to fuzz, would you like a default value to be applied: [1] yes [2] no ---> 1
+...
+would you like to run default tests and specify the fields: [1] yes [2] no ---> 2
+would you like to run IP tests via file: [1] yes [2] no ---> 2
+...
+<_io.StringIO object at 0x124a5c5e8> False-False
+<_io.StringIO object at 0x124a5caf8> False-False
+<_io.StringIO object at 0x124a5c438> False-False
+<_io.StringIO object at 0x124a5c9d8> False-False
+received_and_match: 763
+received_not_match: 0
+not_matched_not_received 461
+total: 1224
+
+<> the io.StringIO printout are the packets in pkt.show() form
+<> False-False means packet not send (bad ACK) and not sniffed
+<> True-False means packet sent and received, but pattern match failed
+<> True-True means packet sent and received and pattern matched
+
+<> notably, relying on failed-ACK timeout from sniff is where the lag comes from
+<> this could be fixed by only sending valid packets, but that's not a fuzzer!
+<> also note that fields that are too large are handled by random selections in the default case
+```
+    - IP LAYER - fuzzing specific fields with user input
 
 ```
+bash-3.2# python3 fuzzer.py      
+would you like to check if the server is running (command line IP address for server): [1] yes [2] no ---> 2
+would you like to fuzz the IP layer: [1] yes [2] no ---> 1
+would you like to run all default tests with set default values: [1] yes [2] no ---> 2
+would you like to run default tests and specify the fields: [1] yes [2] no ---> 1
+type a field exactly as is: 'version', 'internet_header_length', 'type_of_service', 'length_of_packet', 'id_of_packet', 'flags', 'frag'
+, 'time_to_live', 'protocol', 'copy_flag', 'optclass', 'option' ---> version
+...
+would you like to run IP tests via file: [1] yes [2] no ---> 2
+would you like to run IP tests via file: [1] yes [2] no ---> 2
+<_io.StringIO object at 0x11b826b88> False-False
+<_io.StringIO object at 0x11b826dc8> False-False
+<_io.StringIO object at 0x11b829798> False-False
+<_io.StringIO object at 0x11b8290d8> False-False
+<_io.StringIO object at 0x11b8294c8> True-True
+<_io.StringIO object at 0x11b8298b8> False-False
+...
+<_io.StringIO object at 0x11b830e58> False-False
+received_and_match: 1
+received_not_match: 0
+not_matched_not_received 15
+total: 16
 
-## Program Functionality:
+<> we can see the printout, version starts at 0 then up to 4 where it is "True-True"
+<> the rest fail, which is why we get 1 successful match and the rest not matched and not received
+<> see background for more detail ==> version [0,15]
+```
 
--
+    - IP LAYER - content read from hex from file
+
+```
+bash-3.2# python3 fuzzer.py
+would you like to check if the server is running (command line IP address for server): [1] yes [2] no ---> 2
+would you like to fuzz the IP layer: [1] yes [2] no ---> 1
+would you like to run all default tests with set default values: [1] yes [2] no ---> 2
+would you like to run default tests and specify the fields: [1] yes [2] no ---> 2
+would you like to run IP tests via file: [1] yes [2] no ---> 1
+...
+<_io.StringIO object at 0x121f51b88> True-True
+False False-False
+<_io.StringIO object at 0x121f540d8> True-True
+received_and_match: 2
+received_not_match: 0
+not_matched_not_received 1
+total: 3
+
+<> this depends on the contents of "ip_from_file.txt"
+<> that file expects a syntactically correct dictionary
+<> if one of the values is incorrectly formatted, it is skipped (this is the "False False-False above")
+<> you can add your own fields this way by either copy-pasting the first one or making a new dictionary
+<> this is based around the IP.show() structure. Here it is for Clarity
+
+###[ IP ]###
+  version   = 13
+  ihl       = None
+  tos       = 0x0
+  len       = None
+  id        = 1
+  flags     =
+  frag      = 0
+  ttl       = 64
+  proto     = tcp
+  chksum    = None
+  src       = 192.168.0.191
+  dst       = 35.188.14.53
+  \options   \
+###[ TCP ]###
+     sport     = 17654
+     dport     = websm
+     seq       = 1371070446
+     ack       = 3378443242
+     dataofs   = None
+     reserved  = 0
+     flags     = A
+     window    = 8192
+     chksum    = None
+     urgptr    = 0
+     options   = []
+###[ Raw ]###
+        load      = '\xde\xad\xbe\xef\x00\x00'
+```
+
+    - APPLICATION LAYER - default random payloads
 
 ## Error handling:
 

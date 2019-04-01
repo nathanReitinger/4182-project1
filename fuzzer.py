@@ -172,7 +172,7 @@ def IPlayer_from_file(log):
     f.close()
 
 #------------------------------------------------------------------------------#
-def IPlayer_default_tests(log, user_specified=False):
+def IPlayer_default_tests(log, user_specified=False, number_random_values=False):
     #####################################################
     # TODO check that these are not needing to be hex
     ######################################################
@@ -300,6 +300,27 @@ def IPlayer_default_tests(log, user_specified=False):
         fields['length_of_packet'] = i
         TCP_send(fields, log, is_fast)
 
+    #
+    # user-specified number of random values to send
+    #
+    id_hits = random.sample(range(0,65536), number_random_values)
+    for i in id_hits:
+        fields['id_of_packet'] = i
+        TCP_send(fields, log, is_fast)
+    fields = default.copy()
+    # use beginning, middle, end values
+    frag_hits = random.sample(range(0, 8192), number_random_values)
+    for i in frag_hits:
+        fields['frag'] = i
+        TCP_send(fields, log, is_fast)
+    fields = default.copy()
+    # use beginning, actual-length based on default packet, end values
+    length_hits = random.sample(range(0, 65534), number_random_values)
+    for i in length_hits:
+        fields['length_of_packet'] = i
+        TCP_send(fields, log, is_fast)
+
+
 #------------------------------------------------------------------------------#
 def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
@@ -373,7 +394,6 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
 
 def main():
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
 
     #
     # prerequisites
@@ -387,7 +407,6 @@ def main():
         # set up iptables and root correctly (this step just skips it on my mac (Darwin))
         ubuntu()
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
 
     #
     # setting defaults
@@ -441,8 +460,6 @@ def main():
         else:
             sys.exit("[-] invalid path")
 
-
-
     #
     # check on server
     #
@@ -451,7 +468,6 @@ def main():
     ret = get_input(question)
     if ret:
         server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE)
-
 
     #
     # IP LAYER
@@ -468,7 +484,13 @@ def main():
         question = "would you like to run all default tests with set default values: [1] yes [2] no"
         ret = get_input(question)
         if ret:
-            IPlayer_default_tests(log)
+            question = "on fields too large to fuzz, would you like a default value to be applied: [1] yes [2] no"
+            ret = get_input(question)
+            if ret:
+                IPlayer_default_tests(log)
+            else:
+                question = "how many random values would you like to send?"
+                IPlayer_default_tests(log, number_random_values=get_input_number(question))
 
         #
         # IP layer user-picks field
