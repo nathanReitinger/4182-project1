@@ -110,7 +110,11 @@ bash-3.2# python3 fuzzer.py -ip_destination 299.299.299.299
 - missing or inaccessible pattern file
 ```
 <> removal of file "payload_default" will throw a flag
-<>
+<> if the content of "payload_default" is piazza, invalid hex, then it fails
+bash-3.2# python3 fuzzer.py
+==> the string in hex_pattern is not in hex!
+==> try something like '9f' instead
+[-] fuzzer will not run until valid hex is entered in payload_default.txt!
 ```
 
 ## Clarity of the Code:

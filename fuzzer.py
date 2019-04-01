@@ -58,10 +58,14 @@ except:
     sys.exit("[-] please include a file named 'payload_default.txt' and 'ip_from_file.txt' and 'application_from_file.txt")
 if not all(c in string.hexdigits for c in DEFAULT_PAYLOAD):
     print("==> the string in hex_pattern is not in hex!")
-    print("==> try something like '9f' instread")
+    print("==> try something like '9f' instead")
     # example: foo ==> fail, this is not hex
     # examplee: deadbeef ==> pass, this is hex
     sys.exit("[-] fuzzer will not run until valid hex is entered in payload_default.txt!")
+if len(DEFAULT_PAYLOAD) == 0:
+    sys.exit("[-] fuzzer will not run until payload is not empty!")
+if len(DEFAULT_PAYLOAD) > 500:
+    sys.exit("[-] payload exceeded max payload length!")
 DEFAULT_PAYLOAD = binascii.unhexlify(DEFAULT_PAYLOAD)
 #---------------------------------------------------------------#
 
