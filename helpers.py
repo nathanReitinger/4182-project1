@@ -154,7 +154,6 @@ def get_input(question):
         print(error)
         return get_input(question)
 
-
 def post_processing(log, LOG_FILE_PATH=None):
     """
     - printer
