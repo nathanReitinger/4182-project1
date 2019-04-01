@@ -93,6 +93,8 @@ total: 1224
 <> this could be fixed by only sending valid packets, but that's not a fuzzer!
 <> also note that fields that are too large are handled by random selections in the default case
 ```
+
+
     - IP LAYER - fuzzing specific fields with user input
 
 ```
@@ -123,6 +125,7 @@ total: 16
 <> the rest fail, which is why we get 1 successful match and the rest not matched and not received
 <> see background for more detail ==> version [0,15]
 ```
+
 
     - IP LAYER - content read from hex from file
 
