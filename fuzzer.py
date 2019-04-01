@@ -204,8 +204,6 @@ def IPlayer_default_tests(log, user_specified=False):
     # user specified fields to fuzz
     #
 
-    print(every_field[user_specified])
-
     if user_specified:
         if user_specified == 'copy_flag' or user_specified == 'optclass' or user_specified == 'option':
             for i in every_field[user_specified]:
@@ -320,7 +318,10 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol'], options=IPOption(copy_flag=options['copy_flag'], optclass=options['optclass'], option=options['option'])) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         else:
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
-        ACK.show()
+        ###############################################
+        # turn me on to see each packet being sent    #
+        # ACK.show()                                  #
+        ###############################################
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
         # this occurs for too-high numbers or too-low numbers or odd data types

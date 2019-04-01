@@ -35,7 +35,17 @@ python3 fuzzer.py
 
 ## Error handling:
 
--
+- all errors should be handled by the code.
+
+- - 
+
+For example, the following random values are sent:
+`random_values = ['abracadabra', 9, '\x00', '\xff', '0x1', '\xff\xff\xff\xff\xff', float('inf'), float('-inf'), ['one'], {'two':3}]`
+- - these values are not only out of range, they are invalid
+- - the code notes this as `[-] odd value broke ACK! nothing was sent out. Moving on to next` and moves on
+
+Another example:
+
 
 ## Clarity of the Code:
 
@@ -54,19 +64,19 @@ python3 fuzzer.py
                 |
 +---------------+-----------------+
 |fuzzer.py                        |
-+- asks user questions            |
-|| either runs through defaults or|
-|| generates packets from files   |
+|- asks user questions            |
+|- either runs through defaults or|
+|- generates packets from files   |
 +---------------+-----------------+
                 |
                 |
                 |
                 |
                 v
-  post_processing (finishing function)
-  -received_and_match: packet sent, received by server, had server's pattern
-  - received_not_matched: packet sent, received by server, did not have server's pattern
-  - not_matched_not_received: ACK failed, either because of bad values or values out of range
-
-
+  post_processing (finishing function, working with log)
+  - received_and_match: packet sent, received by server, had server's pattern
+  - received_not_matched: packet sent, received by server, no pattern
+  - not_matched_not_received: ACK failed, likely bad values
+  <> packets are stored in _io.StringIO objects as a string of scapy's pkt.show()
+     - this is useful for viewing packets,
 ```
