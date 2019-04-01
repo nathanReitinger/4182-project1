@@ -1,3 +1,13 @@
+
+
+
+## this is a copy of the server which lives on Google cloud
+## to edit the server, use the installation guide and edit it directly
+## this file is here for illustrative purposes 
+
+
+
+
 """
 0. set up the log
 1. create socket
@@ -42,17 +52,17 @@ threadLock = threading.Lock()
 - total packets received kept in variable "total packets received"
 - when packet is received and has hex_pattern, payload record value incremented
 
-example: 
+example:
     server receives pattern matched packet "de" 3 times
     server receives b'\xcc' not matching "de" 1 time
     server receives b'\xee' not matching "de" 1 time
     server receives b'' not maching "de" 1 time
-    
-    output diciontary looks like this: 
+
+    output diciontary looks like this:
         total packets recived: 6
         cc: 1       <== this is server checkup packet
         ee: 1       <== this is an end TCP sequence packet
-          : 1       <== this is the '' 
+          : 1       <== this is the ''
         de: 3       <== these are packets received and matching
 """
 output = {}
@@ -96,28 +106,28 @@ def clients(conn, valid_packets):
     while True:
         payload = conn.recv(2048)
         # bytes = bytearray(payload)
-        
+
         print("\t\t", payload)
-        
+
         start = 0
         stop = len(HEX_PATTERN)
         slice1 = payload[start:stop]
         slice2 = HEX_PATTERN[start:stop]
-        
+
         reply = b'\xff'
-        
+
         output['total packets recived:'] += 1
 
         if slice1 == slice2:
             reply = b'\x00'
-            
+
             # increment total match received
             output['total valid recived:'] += 1
-            
+
             # log specific packet payload that matched
             to_log = payload.hex() + ":"
             # print("\t\t to log:", to_log)
-            
+
             # log the entire paylaod
             if to_log in output:
                 output[to_log] += 1
@@ -130,7 +140,7 @@ def clients(conn, valid_packets):
                 output[to_log] += 1
             else:
                 output[to_log] = 1
-                
+
         with threadLock:
             valid_packets += 1
         if not payload:
@@ -142,7 +152,7 @@ try:
         conn, addr = s.accept()  # accept an incoming connection (uses socket library)
         print("connected with " + addr[0] + ":" + str(addr[1]))
         start_new_thread(clients, (conn, valid_packets,))
-        
+
 except KeyboardInterrupt:
     s.close()
     print("\n=====================================")
@@ -152,6 +162,6 @@ except KeyboardInterrupt:
     for key, item in output.items():
         print(key, item)
     sys.exit("-- exiting upon keyboard interrupt --")
-    
+
 # if popped out of while1 and not keyboardInterrupt
 s.close()
