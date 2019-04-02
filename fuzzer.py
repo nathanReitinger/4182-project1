@@ -158,7 +158,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
 #------------------------------------------------------------------------------#
 def IPlayer_from_file(log):
     master_list = []
-    is_fast = False
+    is_fast = True
 
     with open('ip_from_file.txt', 'r') as f:
         for line in f.readlines():
@@ -357,7 +357,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
-        return
+        pass
     try:
         send(ACK)
     except:
@@ -370,7 +370,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK SEND! Moving on to next")
-        return
+        pass
 
     sequence = ACK[TCP].seq + len(ACK[Raw])
     # tcp[8:4] is for ack <== return ACK needs to be ACK[TCP].seq + len(ACK[Raw]) ==> see [17]
