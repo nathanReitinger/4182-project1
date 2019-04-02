@@ -391,7 +391,6 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
 
     # if not fast do FIN close
     SERVER_END_PAYLOAD = binascii.unhexlify("ee")
-    print(SERVER_END_PAYLOAD)
     if not is_fast:
         FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / SERVER_END_PAYLOAD
         FINACK = sr1(FIN, retry=0, timeout=1)
