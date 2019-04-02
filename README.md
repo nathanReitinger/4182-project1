@@ -69,7 +69,9 @@ bash-3.2# python3 fuzzer.py
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20from%20files.gif)
 
-- *parameter setting and error handling* - 
+- *parameter setting and error handling* - fuzzer allows the selection non-default IP and ports, but checks for invalid ranges
+
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/parameter%20setting%20and%20error%20handling.gif)
 
 ### lower-level non-GUI with explanations
 
