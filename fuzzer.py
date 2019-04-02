@@ -23,6 +23,7 @@ import subprocess
 import os
 import platform as p
 import socket
+import numpy as np
 
 from sniffer import *
 from helpers import *
@@ -59,7 +60,7 @@ except:
 if not all(c in string.hexdigits for c in DEFAULT_PAYLOAD):
     print("==> the string in hex_pattern is not in hex!")
     print("==> try something like '9f' instead")
-    # example: foo ==> fail, this is not hex
+    # example: fooo ==> fail, this is not hex
     # examplee: deadbeef ==> pass, this is hex
     sys.exit("[-] fuzzer will not run until valid hex is entered in payload_default.txt!")
 if len(DEFAULT_PAYLOAD) == 0:
@@ -146,9 +147,11 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
 
     for i in range(number_of_packets):
         if variable_range:
-            random_bytes = binascii.b2a_hex(os.urandom(random.randint(variable_range[0], variable_range[-1])))
+            # random_bytes = binascii.b2a_hex(os.urandom(random.randint(variable_range[0], variable_range[-1])))
+            random_bytes = np.random.bytes(random.randint(variable_range[0], variable_range[-1]))
         else:
-            random_bytes = binascii.b2a_hex(os.urandom(payload_size_bytes))
+            # random_bytes = binascii.b2a_hex(os.urandom(payload_size_bytes))
+            random_bytes = np.random.bytes(payload_size_bytes)
         # print(random_bytes)
         TCP_send(fields, log, is_fast, payload=random_bytes)
 
@@ -344,7 +347,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         ###############################################
         # turn me on to see each packet being sent    #
-        # ACK.show()                                  #
+        ACK.show()                                  #
         ###############################################
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
