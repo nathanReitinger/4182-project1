@@ -461,9 +461,12 @@ def main():
         except socket.error:
             sys.exit("[-] invalid IP")
     if options.port_destination:
-        if options.port_destination >=1 and options.port_destination <= 65535:
-            PORT_DESTINATION = int(options.port_destination)
-        else:
+        try:
+            if options.port_destination >=1 and options.port_destination <= 65535:
+                PORT_DESTINATION = int(options.port_destination)
+            else:
+                sys.exit("[-] invalid port")
+        except:
             sys.exit("[-] invalid port")
     if options.ip_source:
         try:
@@ -472,9 +475,12 @@ def main():
         except socket.error:
             sys.exit("[-] invalid IP")
     if options.port_source:
-        if options.port_source >=1 and options.port_source <= 65535:
-            PORT_SOURCE = int(options.port_source)
-        else:
+        try:
+            if options.port_source >=1 and options.port_source <= 65535:
+                PORT_SOURCE = int(options.port_source)
+            else:
+                sys.exit("[-] invalid port")
+        except:
             sys.exit("[-] invalid port")
     if options.log_file_path:
         # see [18]
