@@ -456,7 +456,7 @@ def main():
     options = arg.parse_args()
     if options.ip_destination:
         try:
-            print(socket.inet_aton(options.ip_destination))
+            socket.inet_aton(options.ip_destination)
             IP_DESTINATION = options.ip_destination
         except socket.error:
             sys.exit("[-] invalid IP")
@@ -470,7 +470,7 @@ def main():
             sys.exit("[-] invalid port")
     if options.ip_source:
         try:
-            print(socket.inet_aton(options.ip_source))
+            socket.inet_aton(options.ip_source)
             IP_SOURCE = options.ip_source
         except socket.error:
             sys.exit("[-] invalid IP")
