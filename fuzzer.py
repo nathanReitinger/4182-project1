@@ -95,7 +95,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
     fields = default.copy()
 
     # send packets without closing TCP connection
-    is_fast = False
+    is_fast = True
 
     #
     # check size
@@ -204,7 +204,7 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
     fields = default.copy()
 
     # fast sending without closing TCP connection
-    is_fast = False
+    is_fast = True
 
     #
     # user specified fields to fuzz
@@ -325,19 +325,6 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
 
 
 #------------------------------------------------------------------------------#
-
-def FIN_CLOSE(SYNACK, sequence):
-    # if not fast do FIN close
-    FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / "the end"
-    FINACK = sr1(FIN, retry=0, timeout=1)
-    if (FINACK != None):
-        try:
-            sequence = FINACK[TCP].seq + len(FINACK[Raw])
-        except:
-            pass
-        LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / "the end"
-        send(LASTACK)
-
 def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
     - main send function
@@ -360,7 +347,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         ###############################################
         # turn me on to see each packet being sent    #
-        ACK.show()                                  #
+        # ACK.show()                                  #
         ###############################################
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
@@ -370,8 +357,9 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
-        sequence = ACK[TCP].seq + len(ACK[Raw])
-        FIN_CLOSE(SYNACK, sequence)
+########################################################################################################################################################################
+        # TODO -- ubuntu sends ender '' anyways, try and get around or give up
+########################################################################################################################################################################
         return
     try:
         send(ACK)
@@ -385,8 +373,9 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK SEND! Moving on to next")
-        sequence = ACK[TCP].seq + len(ACK[Raw])
-        FIN_CLOSE(SYNACK, sequence)
+########################################################################################################################################################################
+        # TODO -- ubuntu sends ender '' anyways, try and get around or give up
+########################################################################################################################################################################
         return
 
     sequence = ACK[TCP].seq + len(ACK[Raw])
