@@ -473,7 +473,7 @@ def main():
 
 
 
-    gui()
+    script()
 
 
     #
