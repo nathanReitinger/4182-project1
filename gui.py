@@ -8,7 +8,7 @@ class FuzzyForm(npyscreen.Form):
         # self.duration = self.add(npyscreen.TitleText, name="Duration Value: " )
         # self.fileName = self.add(npyscreen.TitleFilename, name="Filename:" )
         self.ip_default_or_file = self.add(npyscreen.TitleSelectOne, max_height=4, name='IP LAYER', values=['Default Tests', 'File (please edit ip_from_file.txt)'], scroll_exit=True)
-        self.ip_user_specified_field = self.add(npyscreen.TitleSelectOne, max_height=8, name='IP LAYER - specific fields (leave blank to test all)', values=['version', 'internet_header_length', 'type_of_service', 'length_of_packet', 'id_of_packet', 'flags', 'frag', 'time_to_live', 'protocol', 'copy_flag', 'optclass', 'option'], scroll_exit=True)
+        self.ip_user_specified_field = self.add(npyscreen.TitleSelectOne, max_height=8, name='IP LAYER - specific fields (select one only, per spec)', values=['version', 'internet_header_length', 'type_of_service', 'length_of_packet', 'id_of_packet', 'flags', 'frag', 'time_to_live', 'protocol', 'copy_flag', 'optclass', 'option'], scroll_exit=True)
         self.ip_user_specified_number_values = self.add(npyscreen.TitleText, name="IP LAYER - Number of random values to test (1-1000, else default applied): " )
 
         # self.fileName = self.add(npyscreen.TitleFilenameCombo, name="IP LAYER - packet from file:" )
