@@ -12,7 +12,9 @@
 [12]    https://stackoverflow.com/a/19571469
 [13]    https://stackoverflow.com/questions/9058052/unwanted-rst-tcp-packet-with-scapy
 [14]    https://stackoverflow.com/a/10402323
-[15]	https://gist.github.com/garrettdreyfus/8153571
-[16]	https://stackoverflow.com/questions/29288848/get-info-string-from-scapy-packet
-[17]	https://staff.washington.edu/dittrich/talks/core02/tools/tcpdump-filters.txt
-[18]	https://stackoverflow.com/a/9532586
+[15]    https://gist.github.com/garrettdreyfus/8153571
+[16]	  https://stackoverflow.com/questions/29288848/get-info-string-from-scapy-packet
+[17]	  https://staff.washington.edu/dittrich/talks/core02/tools/tcpdump-filters.txt
+[18]	  https://stackoverflow.com/a/9532586
+[19]    https://medium.com/@vworri/figuring-out-npyscreen-7f6168dc0679
+[20]    https://medium.com/vera-worri/npyscreens-creating-a-ui-that-will-run-a-shell-command-30f29753c0c2

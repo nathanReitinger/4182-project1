@@ -1,5 +1,6 @@
 import npyscreen
 import sys
+# see [19-20]
 
 class FuzzyForm(npyscreen.Form):
     def create(self):
