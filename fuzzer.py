@@ -358,7 +358,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         log[capture] = "False-False"
         print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
 ########################################################################################################################################################################
-        # TODO -- ubuntu sends ender '' anyways, try and get around or give up
+        # TODO -- ubuntu sends ender '' anyways, try and get around or give up (see server patch)
 ########################################################################################################################################################################
         return
     try:
@@ -374,7 +374,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         log[capture] = "False-False"
         print("[-] odd value broke ACK SEND! Moving on to next")
 ########################################################################################################################################################################
-        # TODO -- ubuntu sends ender '' anyways, try and get around or give up
+        # TODO -- ubuntu sends ender '' anyways on connections that fail, try and get around or give up (see server patch)
 ########################################################################################################################################################################
         return
 
@@ -390,15 +390,17 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     sniff(count=0, prn=customAction(capture, log), filter=specific_filter, store=0, timeout=1, stop_filter=hasCode)
 
     # if not fast do FIN close
+    SERVER_END_PAYLOAD = binascii.unhexlify("ee")
+    print(SERVER_END_PAYLOAD)
     if not is_fast:
-        FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / "the end"
+        FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / SERVER_END_PAYLOAD
         FINACK = sr1(FIN, retry=0, timeout=1)
         if (FINACK != None):
             try:
                 sequence = FINACK[TCP].seq + len(FINACK[Raw])
             except:
                 pass
-            LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / "the end"
+            LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / SERVER_END_PAYLOAD
             send(LASTACK)
 
 def main():
