@@ -37,8 +37,8 @@ def ubuntu():
     # Change log level to suppress annoying IPv6 error
     logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
     name = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
-    print("this machine's IP addr:", name)
-    print("[+] using ipTables")
+    print(bcolors.WARNING + "this machine's IP addr:" + bcolors.ENDC, name)
+    print(bcolors.WARNING + "[+] using ipTables" + bcolors.ENDC)
     subprocess.check_output(['iptables','-A', 'OUTPUT', '-p', 'tcp', '--tcp-flags', 'RST', 'RST', '-s', name, '-j','DROP'])
     # iptables -A OUTPUT -p tcp --tcp-flags RST RST -s 192.168.0.148 -j DROP
 
@@ -59,8 +59,8 @@ try:
 except:
     sys.exit("[-] please include a file named 'payload_default.txt' and 'ip_from_file.txt' and 'application_from_file.txt")
 if not all(c in string.hexdigits for c in DEFAULT_PAYLOAD):
-    print("==> the string in hex_pattern is not in hex!")
-    print("==> try something like '9f' instead")
+    print(bcolors.WARNING + "==> the string in hex_pattern is not in hex!" + bcolors.ENDC)
+    print(bcolors.WARNING +"==> try something like '9f' instead" + bcolors.ENDC)
     # example: fooo ==> fail, this is not hex
     # examplee: deadbeef ==> pass, this is hex
     sys.exit("[-] fuzzer will not run until valid hex is entered in payload_default.txt!")
@@ -107,7 +107,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
         # above 730 is too large!
         # do not do this test with variable range, that tests over whole range
         if sys.getsizeof(size_check) >= 1495:
-            print("\n[-] too large! This is total bytes (cap is 4096):", sys.getsizeof(size_check))
+            print(bcolors.WARNING + "\n[-] too large! This is total bytes (cap is 4096):" + bcolors.ENDC, sys.getsizeof(size_check))
             return
 
     #
@@ -121,13 +121,13 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
             list = f.read().splitlines()
             for line in list:
                 if not all(c in string.hexdigits for c in line):
-                    print("[-] not hex, skipping this line ==> ", line)
+                    print(bcolors.WARNING + "\n[-] not hex, skipping this line ==> " + bcolors.ENDC, line, "\n")
                     # example: foo ==> fail, this is not hex
                     # examplee: deadbeef ==> pass, this is hex
                     pass
 
                 elif (len(line) % 2 == 1):
-                    print("[-] not proper char length (of 2), passing on ==> ", line)
+                    print(bcolors.WARNING + "\n [-] not proper char length (of 2), passing on ==> " + bcolors.ENDC, line)
                     # example: foo ==> fail, this is not hex
                     # examplee: deadbeef ==> pass, this is hex
                     pass
@@ -167,7 +167,7 @@ def IPlayer_from_file(log):
                 temp_dict = ast.literal_eval(line)
                 master_list.append(temp_dict)
             except:
-                print("[-] this line was not correctly formatted as a dictionary:\n\n", line)
+                print(bcolors.WARNING + "\n[-] this line was not correctly formatted as a dictionary:\n\n" + bcolors.ENDC, line)
                 pass
 
     for item in master_list:
@@ -177,9 +177,6 @@ def IPlayer_from_file(log):
 
 #------------------------------------------------------------------------------#
 def IPlayer_default_tests(log, user_specified=False, number_random_values=False):
-    #####################################################
-    # TODO check that these are not needing to be hex
-    ######################################################
     version = list(range(0, 16))
     internet_header_length = list(range(0, 16))
     type_of_service = list(range(0, 256))
@@ -218,11 +215,27 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
                 TCP_send(fields, log, is_fast, options=options)
             options = options_default.copy()
         else:
-            fields = default.copy()
-            for i in every_field[user_specified]:
-                fields[user_specified] = i
-                TCP_send(fields, log, is_fast)
-            fields = default.copy()
+
+            if user_specified == 'id_of_packet':
+                # send every 250th value
+                for i in id_of_packet[::250]:
+                    fields['id_of_packet'] = i
+                    TCP_send(fields, log, is_fast)
+            elif user_specified == 'frag':
+                frag_hits = [0,1,2,3,4,5,4095, 4096, 4097, 8190, 8192]
+                for i in frag_hits:
+                    fields['frag'] = i
+                    TCP_send(fields, log, is_fast)
+            elif user_specified == 'length_of_packet':
+                length_hits = [0,1,2,3,4,5,63, 64, 65, 66, 67, 65533, 65534, 65535]
+                for i in length_hits:
+                    fields['length_of_packet'] = i
+                    TCP_send(fields, log, is_fast)
+            else:
+                fields = default.copy()
+                for i in every_field[user_specified]:
+                    fields[user_specified] = i
+                    TCP_send(fields, log, is_fast)
         return
 
     #
@@ -231,7 +244,7 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
 
     for i in random_values:
         for j in all_fields:
-            print(i, j)
+            # print(i, j)
             fields = default.copy()
             fields[j] = i
             TCP_send(fields, log, is_fast)
@@ -303,6 +316,7 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
     for i in length_hits:
         fields['length_of_packet'] = i
         TCP_send(fields, log, is_fast)
+    fields = default.copy()
 
     #
     # user-specified number of random values to send
@@ -337,9 +351,9 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     SYNACK = sr1(SYN, retry=1, timeout=1)
     if (SYNACK == None):
         SYNACK = sr1(SYN, retry=1, timeout=1)
-        print("[-] error on SYNACK sr1, simply trying again")
+        print(bcolors.WARNING + "[-] error on SYNACK sr1, simply trying again" + bcolors.ENDC)
         if (SYNACK == None):
-            print("[-] error on SYNACK sr1 again, returning")
+            print(bcolors.WARNING + "[-] error on SYNACK sr1 again, returning" + bcolors.ENDC)
             return False
     try:
         if options:
@@ -357,7 +371,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         # ACK.show()
         capture = string2variable(fields)
         log[capture] = "False-False"
-        print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
+        print(bcolors.WARNING + "[-] odd value broke ACK! nothing was sent out. Moving on to next"  + bcolors.ENDC)
 ########################################################################################################################################################################
         # TODO -- ubuntu sends ender '' anyways, try and get around or give up (see server patch)
 ########################################################################################################################################################################
@@ -373,7 +387,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         if not capture:
             capture = string2variable(fields)
         log[capture] = "False-False"
-        print("[-] odd value broke ACK SEND! Moving on to next")
+        print(bcolors.WARNING + "[-] odd value broke ACK SEND! Moving on to next" + bcolors.ENDC)
 ########################################################################################################################################################################
         # TODO -- ubuntu sends ender '' anyways on connections that fail, try and get around or give up (see server patch)
 ########################################################################################################################################################################
@@ -471,11 +485,6 @@ def main():
         else:
             sys.exit("[-] invalid path")
 
-
-
-    script()
-
-
     #
     # check on server
     #
@@ -485,6 +494,67 @@ def main():
     if ret:
         server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE)
 
+    #
+    # check on new GUI
+    #
+    question = "use the pretty GUI: [1] yes [2] no"
+    ret = get_input(question)
+    if ret:
+        master_values = script()
+        if master_values:
+            # print(master_values)
+            # sys.exit()
+            if master_values['ip_fuzzing'] == 'yes':
+
+                if master_values['ip_user_specified_field'] != 'default' and master_values['ip_user_specified_field'] != None:
+                    IPlayer_default_tests(log, user_specified=master_values['ip_user_specified_field'])
+
+                elif master_values['ip_user_specified_number_values'] != None:
+                    IPlayer_default_tests(log, number_random_values=master_values['ip_user_specified_number_values'])
+
+                elif master_values['ip_default_or_file'] == 'file':
+                    IPlayer_from_file(log)
+
+                elif master_values['ip_default_or_file'] == 'default' and master_values['ip_user_specified_number_values'] == None:
+                    IPlayer_default_tests(log)
+
+            if master_values['app_fuzzing'] == 'yes':
+
+                if master_values['app_default_or_file'] == 'file':
+                    ApplicationLayer_default_tests(log, from_file=True)
+
+                else:
+                    if master_values['app_packets_number'] == 'default':
+                        number_of_packets = 10
+                    else:
+                        number_of_packets = master_values['app_packets_number']
+                    if master_values['app_payload_size'] == 'default':
+                        payload_size_bytes = 10
+                    else:
+                        payload_size_bytes = master_values['app_payload_size']
+                    if master_values['app_payload_variable_low'] == 'default':
+                        variable_low_end = 1
+                    else:
+                        variable_low_end = master_values['app_payload_variable_low']
+                    if master_values['app_payload_variable_high'] == 'default':
+                        variable_high_end = 10
+                    else:
+                        variable_high_end = master_values['app_payload_variable_high']
+
+                    if master_values['app_payload_variable_high'] == 'default' and master_values['app_payload_variable_low'] == 'default':
+                        ApplicationLayer_default_tests(log, number_of_packets, payload_size_bytes)
+                    else:
+                        variable_range = []
+                        variable_range.append(variable_low_end)
+                        variable_range.append(variable_high_end)
+                        ApplicationLayer_default_tests(log, number_of_packets, variable_range=variable_range)
+
+
+            ## pretty print and exiting
+            post_processing(log, LOG_FILE_PATH)
+            sys.exit()
+        else:
+            print("[+] using binary question GUI!")
     #
     # IP LAYER
     #
@@ -604,7 +674,7 @@ def main():
             post_processing(log, LOG_FILE_PATH)
 
 
-    #-------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------#
 
 
 

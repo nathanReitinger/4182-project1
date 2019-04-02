@@ -5,6 +5,9 @@ import sys
 import io
 import binascii
 
+class bcolors:
+    WARNING = '\033[95m'
+    ENDC = '\033[0m'
 
 def string2variable(string):
     capture = io.StringIO()
@@ -37,7 +40,7 @@ def server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE):
     - is naive, simple test acts like a ping to see if anything comes back
     """
 
-    print("\n[ ] checking on server at:", IP_DESTINATION, "\n")
+    print(bcolors.WARNING + "\n[ ] checking on server at:" + bcolors.ENDC, IP_DESTINATION, "\n")
 
     # helps server know what packets are for setup versus fuzzing
     # cc and ee are for setup: cc is server check and ee is end message from TCP ending sequence
@@ -49,10 +52,10 @@ def server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE):
     SYN = ip / TCP(sport=port, dport=PORT_DESTINATION, flags="S", seq=random.randrange(0, (2 ** 32) - 1))
     SYNACK = sr1(SYN, retry=1, timeout=1)
     if (SYNACK == None):
-        print("[-] error on SYNACK sr1, simply trying again")
+        print(bcolors.WARNING + "[-] error on SYNACK sr1, simply trying again" + bcolors.ENDC)
         SYNACK = sr1(SYN, retry=1, timeout=1)
         if (SYNACK == None):
-            sys.exit("[-] error on SYNACK sr1 again, exiting!")
+            sys.exit(bcolors.WARNING + "[-] error on SYNACK sr1 again, exiting!" + bcolors.ENDC)
     ACK = IP(dst=IP_DESTINATION) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / SERVER_CHECK_PAYLOAD
     recv = sr1(ACK)
     # if the server is not configured properly, our TCP sequence will fail and the ack-back is 0
@@ -64,7 +67,7 @@ def server_check(IP_DESTINATION, PORT_DESTINATION, IP_SOURCE, PORT_SOURCE):
     sequence = ACK[TCP].seq + len(ACK[Raw])
 
     if SERVER_IS_ON:
-        print("\n[+] success, server is ready for fuzzing\n\n")
+        print(bcolors.WARNING + "\n[+] success, server is ready for fuzzing\n" + bcolors.ENDC)
         FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / SERVER_END_PAYLOAD
         FINACK = sr1(FIN, retry=1, timeout=1)
         if (FINACK != None):
@@ -116,10 +119,10 @@ def get_input_fields(question):
         if check == "option":
             return "option"
         else:
-            print('Invalid Input')
+            print(bcolors.WARNING + '[-] Invalid Input' + bcolors.ENDC)
             return get_input_fields(question)
     except:
-        print('Invalid Input')
+        print(bcolors.WARNING +'[-] Invalid Input' + bcolors.ENDC)
         return get_input_fields(question)
 
 
@@ -147,10 +150,10 @@ def get_input(question):
         elif check == '2':
             return False
         else:
-            print('Invalid Input')
+            print(bcolors.WARNING + '[-] Invalid Input' + bcolors.ENDC)
             return get_input(question)
     except Exception as error:
-        print("Please enter 1 or 2")
+        print(bcolors.WARNING + "[-] Please enter 1 or 2" + bcolors.ENDC)
         print(error)
         return get_input(question)
 
@@ -179,6 +182,7 @@ def post_processing(log, LOG_FILE_PATH=None):
         if LOG_FILE_PATH and key:
             log_it(key, item, LOG_FILE_PATH)
 
+    print("\n=========================================\n")
     print("received_and_match:", received_and_match)
     print("received_not_match:", received_not_match)
     print("not_matched_not_received", not_matched_not_received)
