@@ -95,7 +95,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
     fields = default.copy()
 
     # send packets without closing TCP connection
-    is_fast = True
+    is_fast = False
 
     #
     # check size
@@ -204,7 +204,7 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
     fields = default.copy()
 
     # fast sending without closing TCP connection
-    is_fast = True
+    is_fast = False
 
     #
     # user specified fields to fuzz
