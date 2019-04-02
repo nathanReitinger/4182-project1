@@ -75,7 +75,7 @@ bash-3.2# python3 fuzzer.py
 
 - *IP layer selected field (version) and APPLICATION layer variable length* - fuzzing the "version" field of the IP packet and sending variable length hex values on the application layer
 
-![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20parameter%20setting%20and%20error%20handling.gif)
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20fuzz%20version%20and%20variable%20length%20application%20layer.gif)
 
 ### lower-level non-GUI with explanations
 
