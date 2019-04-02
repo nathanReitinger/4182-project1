@@ -27,6 +27,7 @@ import numpy as np
 
 from sniffer import *
 from helpers import *
+from     gui import *
 
 #
 # ubuntu setup
@@ -469,6 +470,11 @@ def main():
             LOG_FILE_PATH = options.log_file_path
         else:
             sys.exit("[-] invalid path")
+
+
+
+    gui()
+
 
     #
     # check on server
