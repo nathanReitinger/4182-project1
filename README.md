@@ -64,7 +64,7 @@ bash-3.2# python3 fuzzer.py
 ```
 - *packets from files* - IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
-![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20from%20files.gif)
 
 
 - *IP LAYER* - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
