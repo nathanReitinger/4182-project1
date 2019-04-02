@@ -158,7 +158,7 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
 #------------------------------------------------------------------------------#
 def IPlayer_from_file(log):
     master_list = []
-    is_fast = True
+    is_fast = False
 
     with open('ip_from_file.txt', 'r') as f:
         for line in f.readlines():
@@ -331,7 +331,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
     ip = IP(dst=IP_DESTINATION)
     port = RandNum(1024, 65535)
-    SYN = ip / TCP(sport=port, dport=PORT_DESTINATION, flags="S", seq=random.randrange(0, (2 ** 32) - 1)) / "just SYN"
+    SYN = ip / TCP(sport=port, dport=PORT_DESTINATION, flags="S", seq=random.randrange(0, (2 ** 32) - 1))
 
     SYNACK = sr1(SYN, retry=1, timeout=1)
     if (SYNACK == None):
