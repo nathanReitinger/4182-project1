@@ -507,9 +507,8 @@ def main():
     ret = get_input(question)
     if ret:
         master_values = script()
+
         if master_values:
-            # print(master_values)
-            # sys.exit()
             if master_values['ip_fuzzing'] == 'yes':
 
                 if master_values['ip_user_specified_field'] != 'default' and master_values['ip_user_specified_field'] != None:

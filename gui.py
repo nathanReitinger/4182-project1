@@ -185,7 +185,8 @@ def myFunction(*args):
         except:
             pass
 
-    if app_payload_variable_low or app_payload_variable_high:
+    if app_payload_variable_low or app_payload_variable_high or values['app_fuzzing'] == 'yes':
+        values['app_fuzzing'] = 'yes'
         if not app_payload_size:
             values['app_payload_size'] = 'default'
         if not app_default_or_file:
@@ -198,7 +199,7 @@ def myFunction(*args):
             if int(app_payload_variable_low) >= 1 and int(app_payload_variable_low) <= 1000:
                 values['app_payload_variable_low'] = int(app_payload_variable_low)
             if int(app_payload_variable_high) >= 1 and int(app_payload_variable_high) <= 1000:
-                values[app_payload_variable_high] = int(app_payload_variable_high)
+                values['app_payload_variable_high'] = int(app_payload_variable_high)
         except:
             pass
 
