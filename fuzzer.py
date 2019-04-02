@@ -325,6 +325,19 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
 
 
 #------------------------------------------------------------------------------#
+
+def FIN_CLOSE(SYNACK, sequence):
+    # if not fast do FIN close
+    FIN = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="FA", seq=sequence, ack=SYNACK.seq+1) / "the end"
+    FINACK = sr1(FIN, retry=0, timeout=1)
+    if (FINACK != None):
+        try:
+            sequence = FINACK[TCP].seq + len(FINACK[Raw])
+        except:
+            pass
+        LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / "the end"
+        send(LASTACK)
+
 def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
     - main send function
@@ -357,7 +370,8 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
-        pass
+        FIN_CLOSE(SYNACK, sequence)
+        return
     try:
         send(ACK)
     except:
@@ -370,7 +384,8 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK SEND! Moving on to next")
-        pass
+        FIN_CLOSE(SYNACK, sequence)
+        return
 
     sequence = ACK[TCP].seq + len(ACK[Raw])
     # tcp[8:4] is for ack <== return ACK needs to be ACK[TCP].seq + len(ACK[Raw]) ==> see [17]
