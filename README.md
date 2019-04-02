@@ -73,6 +73,10 @@ bash-3.2# python3 fuzzer.py
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20parameter%20setting%20and%20error%20handling.gif)
 
+- *IP layer selected field (version) and APPLICATION layer variable length* - fuzzing the "version" field of the IP packet and sending variable length hex values on the application layer
+
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20parameter%20setting%20and%20error%20handling.gif)
+
 ### lower-level non-GUI with explanations
 
 - *IP LAYER* - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
