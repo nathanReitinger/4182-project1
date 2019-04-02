@@ -370,6 +370,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK! nothing was sent out. Moving on to next")
+        sequence = ACK[TCP].seq + len(ACK[Raw])
         FIN_CLOSE(SYNACK, sequence)
         return
     try:
@@ -384,6 +385,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             capture = string2variable(fields)
         log[capture] = "False-False"
         print("[-] odd value broke ACK SEND! Moving on to next")
+        sequence = ACK[TCP].seq + len(ACK[Raw])
         FIN_CLOSE(SYNACK, sequence)
         return
 
