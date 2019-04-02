@@ -106,7 +106,6 @@ type a field exactly as is: 'version', 'internet_header_length', 'type_of_servic
 , 'time_to_live', 'protocol', 'copy_flag', 'optclass', 'option' ---> version
 ...
 would you like to run IP tests via file: [1] yes [2] no ---> 2
-would you like to run IP tests via file: [1] yes [2] no ---> 2
 <_io.StringIO object at 0x11b826b88> False-False
 <_io.StringIO object at 0x11b826dc8> False-False
 <_io.StringIO object at 0x11b829798> False-False
