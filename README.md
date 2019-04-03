@@ -110,7 +110,7 @@ bash-3.2# python3 fuzzer.py
 
 - *wireshark testing* - checking to see if packets are being modified with wireshark. We will run through the time to live field and send a packet for every single possible value of `ttl` (see background.md for details).  
 
-![from files] (https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20wireshark%20ttl.gif)
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20wireshark%20ttl.gif)
 
 ### lowLevel_gui
 
