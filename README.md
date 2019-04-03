@@ -4,6 +4,7 @@
 
 ### this repo
 
+0. I suggest putting this on a new VM (install script includes upgrade and installs scapy, npyscreen, and numpy)
 1. navigate to the folder you would like to put the sourcecode
 2. download the repository (https://github.com/nathanReitinger/4182-project1)
 - if you don't have git, run `sudo apt-get install git -y`
@@ -112,7 +113,7 @@ total: 1224
 <> True-False means packet sent and received, but pattern match failed
 <> True-True means packet sent and received and pattern matched
 
-<> notably, relying on failed-ACK timeout from sniff is where the lag comes from
+<> this will take a long time (waiting to timeout on failed packet-send sniffs)
 <> this could be fixed by only sending valid packets, but that's not a fuzzer!
 <> also note that fields that are too large are handled by random selections in the default case
 ```
