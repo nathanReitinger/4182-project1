@@ -39,16 +39,15 @@ python3 fuzzer.py
 python3 server.py
 ```
 
-[comment]: <> (you should now be logged in to the publicly facing ubuntu server!)
-[comment]: <> (check out the readme in the GUI's tabs (also left-pane) and feel free to make your edits to "server.py")
-[comment]: <> (check out the "hex_pattern.txt" file which is where the hex pattern match comes from)
-[comment]: <> (to add a new hex pattern, type hex values without a "\x" or "0x" ==> e.g., abff01)
-[comment]: <> (the server will not accept non-hex values when starting)
-[comment]: <> (this server has a static external IP address for this class, and should work for any testing you need)
-[comment]: <> (the server is built to work only in this environment)
-[comment]: <> (my installation guide does not cover moving the server to your personal computer)
-[comment]: <> (feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!)
-
+- you should now be logged in to the publicly facing ubuntu server!
+- check out the readme in the GUI's tabs (also left-pane) and feel free to make your edits to "server.py"
+- check out the "hex_pattern.txt" file which is where the hex pattern match comes from
+    - to add a new hex pattern, type hex values without a "\x" or "0x" ==> e.g., abff01
+    - the server will not accept non-hex values when starting
+- this server has a static external IP address for this class, and should work for any testing you need
+- the server is built to work only in this environment
+    - my installation guide does not cover moving the server to your personal computer
+    - feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!
 - this is what the server from the cloud9 website should look like:
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
