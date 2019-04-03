@@ -1,6 +1,6 @@
 # 4182-project1
 
-- [Heading](#heading)
+- [Heading](#installation)
   * [Sub-heading](#sub-heading)
     + [Sub-sub-heading](#sub-sub-heading)
 - [Heading](#heading-1)
