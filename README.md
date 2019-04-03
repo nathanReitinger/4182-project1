@@ -248,7 +248,7 @@ bash-3.2# python3 fuzzer.py
 
 > there are two core features of this project: (1) sniffing and (2) sending
 
-
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/overall_design.jpg)
 
 ### sniffer
 
