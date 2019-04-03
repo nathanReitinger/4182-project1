@@ -43,25 +43,28 @@ python3 server.py
     - to add a new hex pattern, type hex values without a "\x" or "0x" ==> e.g., abff01
     - the server will not accept non-hex values when starting
 - this server has a static external IP address for this class, and should work for any testing you need
-- the server is built to work only lin this environment
+- the server is built to work only in this environment
     - my installation guide does not cover moving the server to your personal computer
     - feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!
+- this is what the server from the cloud9 website should look like:
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
 ## User Guide (examples and functionality)
 
-- see also the background.md file for some information on IP layer
 - default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
     - make sure this file does not have a trailing "\n" which is read as input and is not hex
-- fuzzing IP and Application layers: simply start the program
+- see  the background.md file for some information on IP layer
+
+### basic fuzzing
+
 - full parameters of fuzzer
 ```
 usage: fuzzer.py [-h] [-ip_destination IP_DESTINATION]
                  [-p_destination PORT_DESTINATION] [-ip_source IP_SOURCE]
                  [-p_source PORT_SOURCE] [-log LOG_FILE_PATH]
 ```
-- may also simply run the fuzzer (defaults automatically applied)
+- may also simply run the fuzzer (defaults like IP destination (35.188.14.53) automatically applied)
 
 ```
 bash-3.2# python3 fuzzer.py
