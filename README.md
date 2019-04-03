@@ -37,11 +37,15 @@ python3 fuzzer.py
 python3 server.py
 ```
 
-- you should now be logged in to the publicly facing ubuntu server, which should be running
-- check out the readme in the GUI's tabs and feel free to make your edits to "server.py"
-- check out the "hex_pattern.txt" file which is where the hex pattern match comes from (add new hex pattern to change it)
-- this server has a static external IP address for this class, and should work for any testing you need for this class
-- the server is built to work in this environment, and my installation guide does not cover moving the server to your personal computer. But feel free to do so if you wish---I just wanted to provide an easily accessible server that was already up and running for testing!
+- you should now be logged in to the publicly facing ubuntu server!
+- check out the readme in the GUI's tabs (also left-pane) and feel free to make your edits to "server.py"
+- check out the "hex_pattern.txt" file which is where the hex pattern match comes from
+    - to add a new hex pattern, type hex values without a "\x" or "0x" ==> e.g., abff01
+    - the server will not accept non-hex values when starting
+- this server has a static external IP address for this class, and should work for any testing you need
+- the server is built to work only lin this environment
+    - my installation guide does not cover moving the server to your personal computer
+    - feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
