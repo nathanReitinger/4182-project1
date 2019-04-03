@@ -381,9 +381,9 @@ bash-3.2# python3 fuzzer.py
 
 - at a  high level, the code looks like this
 ```
-                                                           -----------
+                                                           ----------- 35.188.14.53
                 +---------------------------------------->| server.py |
-                |                                          -----------
+                |                                          ----------- 9090
                 |
         TCP_send (main function)
         1. sets up TCP initial connection (SYN and SYNACK)

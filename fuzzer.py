@@ -373,7 +373,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         # turn me on to see each packet being sent
         ACK.show()
         if LOG_FILE_PATH:
-            f = open(LOG_FILE_PATH,"a+")
+            f = open(LOG_FILE_PATH,"w+")
             # can log any part of ACK here, raw data currently being logged
             # the hex load is ACK[Raw].load.hex()
             f.write(ACK[IP].src)
@@ -470,34 +470,35 @@ def main():
             sys.exit("[-] invalid IP")
     if options.port_destination:
         try:
-            if options.port_destination >=1 and options.port_destination <= 65535:
+            if int(options.port_destination) >=1 and int(options.port_destination) <= 65535:
                 PORT_DESTINATION = int(options.port_destination)
             else:
-                sys.exit("[-] invalid port")
+                sys.exit(bcolors.WARNING + "[-] invalid port" + bcolors.ENDC)
         except:
-            sys.exit("[-] invalid port")
+            sys.exit(bcolors.WARNING + "[-] invalid port" + bcolors.ENDC)
     if options.ip_source:
         try:
             socket.inet_aton(options.ip_source)
             IP_SOURCE = options.ip_source
         except socket.error:
-            sys.exit("[-] invalid IP")
+            sys.exit(bcolors.WARNING + "[-] invalid IP" + bcolors.ENDC)
     if options.port_source:
         try:
-            if options.port_source >=1 and options.port_source <= 65535:
+            if int(options.port_source) >=1 and int(options.port_source) <= 65535:
                 PORT_SOURCE = int(options.port_source)
             else:
-                sys.exit("[-] invalid port")
+                sys.exit(bcolors.WARNING + "[-] invalid port" + bcolors.ENDC)
         except:
-            sys.exit("[-] invalid port")
+            sys.exit(bcolors.WARNING + "[-] invalid port" + bcolors.ENDC)
     if options.log_file_path:
         # see [18]
         if os.path.exists(options.log_file_path):
             LOG_FILE_PATH = options.log_file_path
         elif os.access(os.path.dirname(options.log_file_path), os.W_OK):
             LOG_FILE_PATH = options.log_file_path
+            bcolors.WARNING + "[+] path valid, but make it is the right one!" + bcolors.ENDC
         else:
-            sys.exit("[-] invalid path")
+            sys.exit(bcolors.WARNING + "[-] invalid port" + bcolors.ENDC)
 
     #
     # check on server
