@@ -246,7 +246,9 @@ bash-3.2# python3 fuzzer.py
 
 ## misc
 
-> there are two core features of this project: (1) the sniffer and (2) the TCP ACK packet sent with scapy's send function
+> there are two core features of this project: (1) sniffing and (2) sending
+
+
 
 ### sniffer
 
