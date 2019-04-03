@@ -413,3 +413,8 @@ bash-3.2# python3 fuzzer.py
      - this is useful for viewing packets
      - log flag also helps, see line 376 in fuzzer.py for what to do with pkts
 ```
+
+- you should see comments throughout
+- I did not follow the coding style of shortening lines because I think it makes the lines harder to understand
+- if you see a reference [number] just check out references.txt
+
