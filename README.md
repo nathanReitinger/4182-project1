@@ -9,6 +9,9 @@
   * [lowLevel_gui](#lowLevel_gui)
 - [Error_Handling](#Error_Handling)
 - [Code_Clarity](#Code_Clarity)
+- [misc](#misc)
+  * [sniffer](#sniffer)
+  * [tcp_send](#tcp_send)
 
 ## installation
 
@@ -132,7 +135,7 @@ received_not_match: 0
 not_matched_not_received 461
 total: 1224
 
-<> the io.StringIO printout are the packets in pkt.show() form
+<> the io.StringIO printout are the packets in pkt.show() form (I left this because it may be good to modify later)
 <> False-False means packet not send (bad ACK) and not sniffed
 <> True-False means packet sent and received, but pattern match failed
 <> True-True means packet sent and received and pattern matched
@@ -287,8 +290,6 @@ total: 4
 <> use one packet payload per line
 <> this file must be in hex format (without \x or 0x) ==> line is passed if not
 ```
-
-
 ## Error_Handling
 
 - invalid command line arguments
@@ -418,3 +419,66 @@ bash-3.2# python3 fuzzer.py
 - I did not follow the coding style of shortening lines because I think it makes the lines harder to understand
 - if you see a reference [number] just check out references.txt
 
+## misc
+
+> there are two core features of this project: (1) the sniffer and (2) the TCP ACK packet sent with scapy's send function
+
+### sniffer
+
+The sniffing feature's core functionality comes from this line of code:
+
+```
+sniff(count=0, prn=customAction(capture, log), filter=specific_filter, store=0, timeout=1, stop_filter=hasCode)
+```
+
+- `prn` is applied to each packet, logging the ACK information
+- `filter` is used so that only responsive packets are grabbed
+    - the filter works on correct sequence of packets
+    ```
+    sequence = ACK[TCP].seq + len(ACK[Raw])
+    specific_filter = "tcp[8:4] = " + str(sequence)
+    # tcp[8:4] is for ack <== return ACK needs to be ACK[TCP].seq + len(ACK[Raw]) ==> see [17]
+    ```
+- `stop_filter` is used to kill the sniff once it sees the responsive hex-pattern from the server
+- `timeout` is so that we stop the sniff eventually if a stop_filter is not triggered
+    - _notably_ the delay in fuzzing all fields comes from this timeout, but it is useful to make sure delayed packets aren't considered non-responsive  
+
+
+### TCP_send
+
+- the main functionality of fuzzing comes from the packet-filled ACK
+
+```
+ACK =
+
+    IP(dst=IP_DESTINATION,
+       version=fields['version'],
+       ihl=fields['internet_header_length'],
+       tos=fields['type_of_service'],
+       len=fields['length_of_packet'],
+       id=fields['id_of_packet'],
+       flags=fields['flags'],
+       frag=fields['frag'],
+       ttl=fields['time_to_live'],
+       proto=fields['protocol'],
+       options=IPOption(copy_flag=options['copy_flag'],
+                        optclass=options['optclass'],
+                        option=options['option']))
+
+     /
+
+     TCP(sport=SYNACK.dport,
+         dport=PORT_DESTINATION,
+         flags="A",
+         seq=SYNACK.ack,
+         ack=SYNACK.seq + 1)
+
+    /
+
+    payload
+```
+
+- the IP part has fields that are dictionary filled from user-specified values or a series of all values being tested
+    - this includes the options, which although included a few variable length fields, are fully traversed
+- the TCP part of the packet is not fuzzed, but the parameters are properly in sequence
+- the payload is filled from the `payload_default.txt` file
