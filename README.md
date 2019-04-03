@@ -83,7 +83,7 @@ bash-3.2# python3 fuzzer.py
 
 ### Videos
 
-> please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu sends packets that actually appear on the server when sending the SYN and SYNACK in TCP_send(). These do not affect the functionality of the server or the fuzzer.
+> please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu sends packets that actually appear on the server (e.g., `connected with xxx.xxx.xxx.xxx`) when sending the SYN and SYNACK in TCP_send(). These do not appear when sending initiating TCP packets with macOS---this does not affect the functionality of the server or the fuzzer.
 
 - *packets from files* IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
