@@ -1,16 +1,14 @@
 # 4182-project1
 
-- [Heading](#installation)
-  * [Sub-heading](#sub-heading)
-    + [Sub-sub-heading](#sub-sub-heading)
-- [Heading](#heading-1)
-  * [Sub-heading](#sub-heading-1)
-    + [Sub-sub-heading](#sub-sub-heading-1)
-- [Heading](#heading-2)
-  * [Sub-heading](#sub-heading-2)
-    + [Sub-sub-heading](#sub-sub-heading-2)
-
-
+- [Installation](#installation)
+  * [this repo](#this repo)
+  * [server](#server)
+- [User Guide](#User Guide (examples and functionality))
+  * [Basic Fuzzing](#basic fuzzing)
+  * [Videos!](#high-level video)
+  * [low-level gui](#lower-level non-GUI with explanations)
+- [Error Handling](#Error Handling)
+- [Clarity of the Code](#Clarity of the Code)
 
 ## installation
 
@@ -275,7 +273,7 @@ total: 4
 ```
 
 
-## Error handling:
+## Error Handling
 
 - invalid command line arguments
 ```
@@ -363,7 +361,7 @@ bash-3.2# python3 fuzzer.py
 [-] fuzzer will not run until valid hex is entered in payload_default.txt!
 ```
 
-## Clarity of the Code:
+## Clarity of the Code
 
 - at a  high level, the code looks like this
 ```
