@@ -93,12 +93,13 @@ bash-3.2# python3 fuzzer.py
 
 - *server specify pattern, no match* We set the "hex_pattern.txt" to something new, try to send packets from the fuzzer to the server with a non-matched pattern, and see the results. This shows that although one of the payloads was received (the correct version, 4), the hex pattern did not match!
 
-
-- *from files* We have both the IP layer and APPLICATION layer select input from files. This is done by running a selected test and editing the "application_from_file.txt" or "ip_from_file.txt" files. Note, the application file needs to be one packet per line and needs to be hex values. The ip_from_file file needs to be a correctly formatted dictionary--but this should be easy since there are a few examples.
-
-- *parameter setting and error handling* - fuzzer allows the selection non-default IP and ports, but checks for invalid ranges
-
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20payload%20patterns.gif)
+
+- *from files* We have both the IP layer and APPLICATION layer select input from files. This is done by running a selected test as "File"---as opposed to default---for both IP layer and APPLICATION layer, and editing the "application_from_file.txt" or "ip_from_file.txt" files. Note, the application file needs to be one packet per line and needs to be hex values. The ip_from_file file needs to be a correctly formatted dictionary--but this should be easy since there are a few examples. If a line is incorrectly formatted it will be ignored.
+
+
+
+
 
 
 - *IP layer selected field (version) and APPLICATION layer variable length* - fuzzing the "version" field of the IP packet and sending variable length hex values on the application layer
