@@ -1,18 +1,18 @@
 # 4182-project1
 
 - [Installation](#installation)
-  * [this repo](#this repo)
+  * [this_repo](#this_repo)
   * [server](#server)
-- [User Guide](#User Guide (examples and functionality))
-  * [Basic Fuzzing](#basic fuzzing)
-  * [Videos!](#high-level video)
-  * [low-level gui](#lower-level non-GUI with explanations)
-- [Error Handling](#Error Handling)
-- [Clarity of the Code](#Clarity of the Code)
+- [User_Guide](#User_Guide)
+  * [Basic_Fuzzing](#Basic_Fuzzing)
+  * [Videos](#Videos)
+  * [lowLevel_gui](#lowLevel_gui)
+- [Error_Handling](#Error_Handling)
+- [Code_Clarity](#Code_Clarity)
 
 ## installation
 
-### this repo
+### this_repo
 
 0. I suggest putting this on a new VM (install script includes upgrade and installs scapy, npyscreen, and numpy)
 1. navigate to the folder you would like to put the sourcecode
@@ -59,13 +59,13 @@ this is what the server from the cloud9 website should look like:
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
-## User Guide (examples and functionality)
+## User_Guide
 
 - default payload is found in file "payload_default.txt" ==> can change with new hex values if you want
     - make sure this file does not have a trailing "\n" which is read as input and is not hex
 - see  the background.md file for some information on IP layer
 
-### basic fuzzing
+### Basic_Fuzzing
 
 - full parameters of fuzzer
 ```
@@ -79,7 +79,7 @@ usage: fuzzer.py [-h] [-ip_destination IP_DESTINATION]
 bash-3.2# python3 fuzzer.py
 ```
 
-### high-level video
+### Videos
 
 - *packets from files* IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
@@ -93,7 +93,7 @@ bash-3.2# python3 fuzzer.py
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20fuzz%20version%20and%20variable%20length%20application%20layer.gif)
 
-### lower-level non-GUI with explanations
+### lowLevel_gui
 
 - *IP LAYER* - fuzzing all fields (fuzzes everything---includes options, includes out-of-range values, includes crazy values, runs through the entire number-range of possible values for each field)
 
@@ -273,7 +273,7 @@ total: 4
 ```
 
 
-## Error Handling
+## Error_Handling
 
 - invalid command line arguments
 ```
@@ -361,7 +361,7 @@ bash-3.2# python3 fuzzer.py
 [-] fuzzer will not run until valid hex is entered in payload_default.txt!
 ```
 
-## Clarity of the Code
+## Code_Clarity
 
 - at a  high level, the code looks like this
 ```
