@@ -14,7 +14,6 @@
 2. new GUI  - allows user to pick all functions on one screen
 3.          - depends on the user's selection
             <> uses TCP_send() to send and sniff packets after TCP setup
-4.
 """
 
 

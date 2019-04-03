@@ -83,6 +83,8 @@ bash-3.2# python3 fuzzer.py
 
 ### Videos
 
+> please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu sends packets that actually appear on the server when sending the SYN and SYNACK in TCP_send(). These do not affect the functionality of the server or the fuzzer.
+
 - *packets from files* IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20from%20files.gif)
@@ -98,13 +100,14 @@ bash-3.2# python3 fuzzer.py
 - *from files* We have both the IP layer and APPLICATION layer select input from files. This is done by running a selected test as "File"---as opposed to default---for both IP layer and APPLICATION layer, and editing the "application_from_file.txt" or "ip_from_file.txt" files. Note, the application file needs to be one packet per line and needs to be hex values. The ip_from_file file needs to be a correctly formatted dictionary--but this should be easy since there are a few examples. If a line is incorrectly formatted it will be ignored.
 
 
-
-
-
+![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20fuzzing%20from%20file.gif)
 
 - *IP layer selected field (version) and APPLICATION layer variable length* - fuzzing the "version" field of the IP packet and sending variable length hex values on the application layer
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20fuzz%20version%20and%20variable%20length%20application%20layer.gif)
+
+- *wireshark testing* - checking to see if packets are being modified with wireshark. We will run through the time to live field and send a packet for every single possible value of `ttl` (see background.md for details).  
+
 
 ### lowLevel_gui
 
