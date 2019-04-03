@@ -179,8 +179,9 @@ def post_processing(log, LOG_FILE_PATH=None):
         if item == "False-False":
             not_matched_not_received += 1
 
-        if LOG_FILE_PATH and key:
-            log_it(key, item, LOG_FILE_PATH)
+        # gives access to full string ACK if needed
+        # if LOG_FILE_PATH and key:
+        #     log_it(key, item, LOG_FILE_PATH)
 
     print("\n=========================================\n")
     print("received_and_match:", received_and_match)
@@ -198,6 +199,10 @@ def log_it(key, item, LOG_FILE_PATH):
     if index:
         f = open(LOG_FILE_PATH,"a+")
         payload = key.getvalue()[index+len(load):-2]
+        # please note, this writes the bytes as shown by scapy
+        # you will need to modify this to byte string first, then hexlify it
+        payload = payload[1:-1]
+        # payload = binascii.unhexlify(payload)
         f.write(payload + "\n")
         f.close()
 

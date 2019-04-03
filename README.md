@@ -364,6 +364,7 @@ bash-3.2# python3 fuzzer.py
         TCP_send (main function)
         1. sets up TCP initial connection (SYN and SYNACK)
         2. sends custom ACK packet (if valid packet is given)
+        - user may optionally turn `is_fast` to false for TCP close connection
         3. sniffs for a returned packet, stops when received or timeout
         4. logs the scapy packet in a dictionary called `log`
                 |
@@ -379,10 +380,12 @@ bash-3.2# python3 fuzzer.py
                 |
                 |
                 v
-  post_processing (finishing function, working with log)
-  - received_and_match: packet sent, received by server, had server's pattern
-  - received_not_matched: packet sent, received by server, no pattern
-  - not_matched_not_received: ACK failed, likely bad values
+  post_processing (finishing function)
+  - prints out the following:
+  ~ received_and_match: packet sent, received by server, had server's pattern
+  ~ received_not_matched: packet sent, received by server, no pattern
+  ~ not_matched_not_received: ACK failed, likely bad values
   <> packets are stored in _io.StringIO objects as a string of scapy's pkt.show()
-     - this is useful for viewing packets,
+     - this is useful for viewing packets
+     - log flag also helps, see line 376 in fuzzer.py for what to do with pkts
 ```
