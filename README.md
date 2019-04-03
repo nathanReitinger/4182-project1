@@ -48,7 +48,7 @@ python3 server.py
 - the server is built to work only in this environment
     - my installation guide does not cover moving the server to your personal computer
     - feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!
-- this is what the server from the cloud9 website should look like:
+> this is what the server from the cloud9 website should look like:
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
 
