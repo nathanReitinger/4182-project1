@@ -85,7 +85,7 @@ bash-3.2# python3 fuzzer.py
 
 > please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu sends packets that actually appear on the server (e.g., `connected with xxx.xxx.xxx.xxx`) when sending the SYN and SYNACK in TCP_send(). These do not appear when sending initiating TCP packets with macOS---this does not affect the functionality of the server or the fuzzer.
 
-- *packets from files* IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
+- *packets from files* - IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20from%20files.gif)
 
@@ -93,12 +93,11 @@ bash-3.2# python3 fuzzer.py
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20parameter%20setting%20and%20error%20handling.gif)
 
-- *server specify pattern, no match* We set the "hex_pattern.txt" to something new, try to send packets from the fuzzer to the server with a non-matched pattern, and see the results. This shows that although one of the payloads was received (the correct version, 4), the hex pattern did not match!
+- *server specify pattern and no match on pattner* - We set the "hex_pattern.txt" to something new, try to send packets from the fuzzer to the server with a non-matched pattern, and see the results. This shows that although one of the payloads was received (the correct version, 4), the hex pattern did not match!
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20payload%20patterns.gif)
 
-- *from files* We have both the IP layer and APPLICATION layer select input from files. This is done by running a selected test as "File"---as opposed to default---for both IP layer and APPLICATION layer, and editing the "application_from_file.txt" or "ip_from_file.txt" files. Note, the application file needs to be one packet per line and needs to be hex values. The ip_from_file file needs to be a correctly formatted dictionary--but this should be easy since there are a few examples. If a line is incorrectly formatted it will be ignored.
-
+- *packets fields from files* - We have both the IP layer and APPLICATION layer select input from files. This is done by running a selected test as "File"---as opposed to default---for both IP layer and APPLICATION layer, and editing the "application_from_file.txt" or "ip_from_file.txt" files. Note, the application file needs to be one packet per line and needs to be hex values. The ip_from_file file needs to be a correctly formatted dictionary--but this should be easy since there are a few examples. If a line is incorrectly formatted it will be ignored.
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20fuzzing%20from%20file.gif)
 
