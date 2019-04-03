@@ -41,8 +41,7 @@ python3 server.py
 
 
 > you should now be logged in to the publicly facing ubuntu server!
-
-> check out the readme in the GUI's tabs (also left-pane) and feel free to make your edits to "server.py"
+check out the readme in the GUI's tabs (also left-pane) and feel free to make your edits to "server.py"
 
 > check out the "hex_pattern.txt" file which is where the hex pattern match comes from
 
@@ -54,7 +53,7 @@ python3 server.py
 > the server is built to work only in this environment
     - my installation guide does not cover moving the server to your personal computer
     - feel free to do so---I just wanted to provide an easily accessible server that was already up and running for testing!
-    
+
 > this is what the server from the cloud9 website should look like:
 
 ![server image](https://github.com/nathanReitinger/4182-project1/blob/master/media/server.png)
