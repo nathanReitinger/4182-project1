@@ -559,7 +559,7 @@ def main():
             post_processing(log, LOG_FILE_PATH)
             sys.exit()
         else:
-            print("[+] using binary question GUI!")
+            print(bcolors.WARNING + "[+] using binary question GUI!" + bcolors.ENDC)
     #
     # IP LAYER
     #

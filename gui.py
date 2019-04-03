@@ -1,5 +1,7 @@
 import npyscreen
 import sys
+from helpers import *
+
 # see [19-20]
 
 class FuzzyForm(npyscreen.Form):
@@ -213,5 +215,5 @@ def script():
     try:
         return npyscreen.wrapper_basic(myFunction)
     except:
-        print("[-] please make the terminal window larger to use this GUI")
+        print(bcolors.WARNING + "[-] please make the terminal window larger to use this GUI" + bcolors.ENDC)
         return False
