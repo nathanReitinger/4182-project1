@@ -362,7 +362,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             ACK = IP(dst=IP_DESTINATION, version=fields['version'], ihl=fields['internet_header_length'], tos=fields['type_of_service'], len=fields['length_of_packet'], id=fields['id_of_packet'], flags=fields['flags'], frag=fields['frag'], ttl=fields['time_to_live'], proto=fields['protocol']) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=SYNACK.ack, ack=SYNACK.seq + 1) / payload
         ###############################################
         # turn me on to see each packet being sent    #
-        ACK.show()                                  #
+        # ACK.show()                                  #
         ###############################################
     except:
         # what likely happened is that the ACK would not send becuase it contained an invalid value for a field
@@ -372,9 +372,6 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
         capture = string2variable(fields)
         log[capture] = "False-False"
         print(bcolors.WARNING + "[-] odd value broke ACK! nothing was sent out. Moving on to next"  + bcolors.ENDC)
-########################################################################################################################################################################
-        # TODO -- ubuntu sends ender '' anyways, try and get around or give up (see server patch)
-########################################################################################################################################################################
         return
     try:
         send(ACK)
@@ -388,9 +385,6 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             capture = string2variable(fields)
         log[capture] = "False-False"
         print(bcolors.WARNING + "[-] odd value broke ACK SEND! Moving on to next" + bcolors.ENDC)
-########################################################################################################################################################################
-        # TODO -- ubuntu sends ender '' anyways on connections that fail, try and get around or give up (see server patch)
-########################################################################################################################################################################
         return
 
     sequence = ACK[TCP].seq + len(ACK[Raw])
