@@ -391,7 +391,7 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
             f = open(LOG_FILE_PATH,"w+")
             # can log any part of ACK here, raw data currently being logged
             # the hex load is ACK[Raw].load.hex()
-            f.write(ACK[IP].src)
+            f.write(ACK[Raw].load.hex())
             f.write("\n")
             f.close()
         ###############################################
