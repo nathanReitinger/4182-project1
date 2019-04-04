@@ -8,7 +8,7 @@
   * [Videos](#Videos)
 - [Error_Handling](#Error_Handling)
 - [Code_Clarity](#Code_Clarity)
-- [misc](#misc)
+- [core_features](#core_features)
   * [sniffer](#sniffer)
   * [tcp_send](#tcp_send)
 
@@ -244,7 +244,7 @@ bash-3.2# python3 fuzzer.py
 - I did not follow the coding style of shortening lines because I think it makes the lines harder to understand
 - if you see a reference [number] just check out references.txt
 
-## misc
+## core_features
 
 > there are two core features of this project: (1) sniffing and (2) sending
 
