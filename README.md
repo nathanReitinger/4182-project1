@@ -316,4 +316,4 @@ ACK =
 
 ### final note
 
-- using the fast_send flag as True for non-TCP close means that the server will have connections timeout on its own
+- using the fast_send flag as True for non-TCP close means that the server will have connections timeout on its own. You will see a TimeoutError on the server. This is a known part of the fuzzer, which is only checking for packets sent and received, and does not bother with properly handling the TCP connections

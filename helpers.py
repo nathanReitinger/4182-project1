@@ -125,12 +125,11 @@ def get_input_fields(question):
         print(bcolors.WARNING +'[-] Invalid Input' + bcolors.ENDC)
         return get_input_fields(question)
 
-
 def get_input_number(question):
     check = str(input(question + " ---> "))
     try:
         val = int(check)
-        if val > 0:
+        if val > 0 and val < sys.maxsize:
             return val
         else:
             print("Please enter a number above or equal to 1")

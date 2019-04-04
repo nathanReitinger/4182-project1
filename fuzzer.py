@@ -598,6 +598,8 @@ def main():
 # backup GUI #
 #------------------------------------------------------------------------------#
 
+    print(bcolors.WARNING + "[+] using backup GUI (depreciated)!" + bcolors.ENDC)
+
     #
     # IP LAYER
     #
@@ -702,6 +704,7 @@ def main():
 
                 variable_range.append(variable_low_end)
                 variable_range.append(variable_high_end)
+                variable_range.sort()
 
                 #### send number_of_packets with range of payload size as variable_range ###
                 ApplicationLayer_default_tests(log, number_of_packets, variable_range=variable_range)
