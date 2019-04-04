@@ -7,24 +7,16 @@ from helpers import *
 class FuzzyForm(npyscreen.Form):
     def create(self):
         self.ip_or_app = self.add(npyscreen.TitleMultiSelect,max_height=3, name='LAYER TO FUZZ', values=['IP', 'Application'],scroll_exit=True)
-        # self.duration = self.add(npyscreen.TitleText, name="Duration Value: " )
-        # self.fileName = self.add(npyscreen.TitleFilename, name="Filename:" )
+
         self.ip_default_or_file = self.add(npyscreen.TitleSelectOne, max_height=4, name='IP LAYER', values=['Default Tests', 'File (please edit ip_from_file.txt)'], scroll_exit=True)
         self.ip_user_specified_field = self.add(npyscreen.TitleSelectOne, max_height=8, name='IP LAYER - specific fields (select one only, per spec)', values=['version', 'internet_header_length', 'type_of_service', 'length_of_packet', 'id_of_packet', 'flags', 'frag', 'time_to_live', 'protocol', 'copy_flag', 'optclass', 'option'], scroll_exit=True)
         self.ip_user_specified_number_values = self.add(npyscreen.TitleText, name="IP LAYER - Number of random values to test (1-1000, else default applied): " )
 
-        # self.fileName = self.add(npyscreen.TitleFilenameCombo, name="IP LAYER - packet from file:" )
-
-
         self.app_default_or_file = self.add(npyscreen.TitleSelectOne, max_height=4, name='APPLICATION LAYER', values=['Default Tests', 'File (please edit application_from_file.txt)'], scroll_exit=True)
-        self.app_packets_number = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Number of Packets (blank for default): " )
-        self.app_payload_size = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Payload Size (blank for default): " )
-        self.app_payload_variable_low = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Variable-Length ==>low<== (blank for default): " )
-        self.app_payload_variable_high = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Variable-Length ==>high<== (blank for default): " )
-
-        # self.myDate = self.add(npyscreen.TitleDateCombo, name='Date Employed')
-        # self.stats = self.add(npyscreen.TitleMultiSelect, max_height=5, name='Capture Statistics',
-        #                              values=['Conversations', 'http', 'DNS', 'Endpoints','Follow TCP/UDP'], scroll_exit=True)
+        self.app_packets_number = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Number of Packets (blank for default, limit 1000 and not below 1): " )
+        self.app_payload_size = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Payload Size (blank for default, if value is beyond max or invalid default used): " )
+        self.app_payload_variable_low = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Variable-Length ==>low (not below 1, else default applied)<== (blank for default): " )
+        self.app_payload_variable_high = self.add(npyscreen.TitleText, name="APPLICATION LAYER - Variable-Length ==>high<== (blank for default, and if value is beyond max or invalid default used): " )
 
 def myFunction(*args):
     F = FuzzyForm(name = "FuZzER")
@@ -182,7 +174,7 @@ def myFunction(*args):
         values['app_payload_variable_high'] = 'default'
         values['app_fuzzing'] = 'yes'
         try:
-            if int(app_payload_size) >= 1 and int(app_payload_size) <= 1000:
+            if int(app_payload_size) >= 1 and int(app_payload_size) < sys.maxsize:
                 values['app_payload_size'] = int(app_payload_size)
         except:
             pass
@@ -198,9 +190,9 @@ def myFunction(*args):
         values['app_payload_variable_low'] = 'default'
         values['app_payload_variable_high'] = 'default'
         try:
-            if int(app_payload_variable_low) >= 1 and int(app_payload_variable_low) <= 1000:
+            if int(app_payload_variable_low) >= 1 and int(app_payload_variable_low) < sys.maxsize:
                 values['app_payload_variable_low'] = int(app_payload_variable_low)
-            if int(app_payload_variable_high) >= 1 and int(app_payload_variable_high) <= 1000:
+            if int(app_payload_variable_high) >= int(app_payload_variable_low) and int(app_payload_variable_high) < sys.maxsize:
                 values['app_payload_variable_high'] = int(app_payload_variable_high)
         except:
             pass

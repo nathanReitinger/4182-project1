@@ -260,14 +260,14 @@ sniff(count=0, prn=customAction(capture, log), filter=specific_filter, store=0, 
 
 - `prn` is applied to each packet, logging the ACK information
 - `filter` is used so that only responsive packets are grabbed
-    - the filter works on correct sequence of packets
+    - the filter works on correctly sequenced packets
     ```
     sequence = ACK[TCP].seq + len(ACK[Raw])
     specific_filter = "tcp[8:4] = " + str(sequence)
     # tcp[8:4] is for ack <== return ACK needs to be ACK[TCP].seq + len(ACK[Raw]) ==> see [17]
     ```
-- `stop_filter` is used to kill the sniff once it sees the responsive hex-pattern from the server
-- `timeout` is so that we stop the sniff eventually if a stop_filter is not triggered
+- `stop_filter` is used to kill the sniff once it sees a responsive hex-pattern from the server
+- `timeout` is so that we stop the sniff eventually
     - _notably_ the delay in fuzzing all fields comes from this timeout, but it is useful to make sure delayed packets aren't considered non-responsive  
 
 
@@ -278,34 +278,37 @@ sniff(count=0, prn=customAction(capture, log), filter=specific_filter, store=0, 
 ```
 ACK =
 
-    IP(dst=IP_DESTINATION,
-       version=fields['version'],
-       ihl=fields['internet_header_length'],
-       tos=fields['type_of_service'],
-       len=fields['length_of_packet'],
-       id=fields['id_of_packet'],
-       flags=fields['flags'],
-       frag=fields['frag'],
-       ttl=fields['time_to_live'],
-       proto=fields['protocol'],
-       options=IPOption(copy_flag=options['copy_flag'],
-                        optclass=options['optclass'],
-                        option=options['option']))
-
+  IP(dst=IP_DESTINATION,
+     version=fields['version'],
+     ihl=fields['internet_header_length'],
+     tos=fields['type_of_service'],
+     len=fields['length_of_packet'],
+     id=fields['id_of_packet'],
+     flags=fields['flags'],
+     frag=fields['frag'],
+     ttl=fields['time_to_live'],
+     proto=fields['protocol'],
+     options=IPOption(copy_flag=options['copy_flag'],
+                      optclass=options['optclass'],
+                      option=options['option']))
      /
 
-     TCP(sport=SYNACK.dport,
-         dport=PORT_DESTINATION,
-         flags="A",
-         seq=SYNACK.ack,
-         ack=SYNACK.seq + 1)
+  TCP(sport=SYNACK.dport,
+     dport=PORT_DESTINATION,
+     flags="A",
+     seq=SYNACK.ack,
+     ack=SYNACK.seq + 1)
 
     /
 
-    payload
+  payload
 ```
 
 - the IP part has fields that are dictionary filled from user-specified values or a series of all values being tested
     - this includes the options, which although included a few variable length fields, are fully traversed
 - the TCP part of the packet is not fuzzed, but the parameters are properly in sequence
 - the payload is filled from the `payload_default.txt` file
+
+### final note
+
+- using the fast_send flag as True for non-TCP close means that the server will have connections timeout on its own

@@ -80,20 +80,20 @@ if len(DEFAULT_PAYLOAD) > 500:
 DEFAULT_PAYLOAD = binascii.unhexlify(DEFAULT_PAYLOAD)
 #---------------------------------------------------------------#
 
-DEFAULT_FILTER = "ip and host " + IP_DESTINATION                # may be used in sniffing, not currently used
-SERVER_CHECK = True                                             # flag for checking if server is on before performing tests
-SERVER_IS_ON = False                                            # used to check if a server is ready to receive packets
+DEFAULT_FILTER = "ip and host " + IP_DESTINATION    # may be used in sniffing, not currently used
+SERVER_CHECK = True                                 # flag for checking if server is on before performing tests
+SERVER_IS_ON = False                                # used to check if a server is ready to receive packets
 
-LOG_FILE_PATH = None                                            # path to store the log file
-                                                                # Add a command line parameter to the fuzzer to allow the user to
-                                                                # specify a log file to which the payload included in each packet
-                                                                # sent when testing the application layer will be logged and log
-                                                                # the payloads. The payload will be logged in hex.
-
+LOG_FILE_PATH = None                                # path to store the log file
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
+
+#
+# APPLICATION LAYER
+#
+
 def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_bytes=False, variable_range=False, from_file=False):
     """
     - send number_of_packets to server
@@ -116,8 +116,8 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
         # above 730 is too large!
         # do not do this test with variable range, that tests over whole range
         if sys.getsizeof(size_check) >= 1495:
-            print(bcolors.WARNING + "\n[-] too large! This is total bytes (cap is 4096):" + bcolors.ENDC, sys.getsizeof(size_check))
-            return
+            print(bcolors.WARNING + "\n[-] too large!" + bcolors.ENDC, sys.getsizeof(size_check))
+            # return
 
     #
     # check if content from file
@@ -158,7 +158,12 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
     for i in range(number_of_packets):
         if variable_range:
             # random_bytes = binascii.b2a_hex(os.urandom(random.randint(variable_range[0], variable_range[-1])))
-            random_bytes = np.random.bytes(random.randint(variable_range[0], variable_range[-1]))
+            random_number = random.randint(variable_range[0], variable_range[-1])
+            # variable can be as big as you want, but it might fail to send
+            if sys.getsizeof(random_number) > 1460:
+                print(bcolors.WARNING + "\n[-] too large!" + bcolors.ENDC)
+            random_bytes = np.random.bytes(random_number)
+
         else:
             # random_bytes = binascii.b2a_hex(os.urandom(payload_size_bytes))
             random_bytes = np.random.bytes(payload_size_bytes)
@@ -166,6 +171,12 @@ def ApplicationLayer_default_tests(log, number_of_packets=False, payload_size_by
         TCP_send(fields, log, is_fast, payload=random_bytes)
 
 #------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+
+#
+# IP LAYER
+#
 def IPlayer_from_file(log):
     master_list = []
     is_fast = True
@@ -184,7 +195,6 @@ def IPlayer_from_file(log):
         TCP_send(item, log, is_fast)
     f.close()
 
-#------------------------------------------------------------------------------#
 def IPlayer_default_tests(log, user_specified=False, number_random_values=False):
     version = list(range(0, 16))
     internet_header_length = list(range(0, 16))
@@ -349,6 +359,12 @@ def IPlayer_default_tests(log, user_specified=False, number_random_values=False)
 
 
 #------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+
+#
+# TCP_send()
+#
 def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
     """
     - main send function
@@ -426,6 +442,10 @@ def TCP_send(fields, log, is_fast, options=False, payload=DEFAULT_PAYLOAD):
                 pass
             LASTACK = IP(dst=IP_DESTINATION, ttl=100) / TCP(sport=SYNACK.dport, dport=PORT_DESTINATION, flags="A", seq=sequence, ack=SYNACK.seq+1) / SERVER_END_PAYLOAD
             send(LASTACK)
+
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 
 def main():
 
@@ -560,13 +580,14 @@ def main():
                         variable_high_end = master_values['app_payload_variable_high']
 
                     if master_values['app_payload_variable_high'] == 'default' and master_values['app_payload_variable_low'] == 'default':
-                        ApplicationLayer_default_tests(log, number_of_packets, payload_size_bytes)
+                        ApplicationLayer_default_tests(log, number_of_packets=number_of_packets, payload_size_bytes=payload_size_bytes)
                     else:
                         variable_range = []
                         variable_range.append(variable_low_end)
                         variable_range.append(variable_high_end)
-                        ApplicationLayer_default_tests(log, number_of_packets, variable_range=variable_range)
-
+                        # if you entered the high and low out of order, this swaps them
+                        variable_range.sort()
+                        ApplicationLayer_default_tests(log, number_of_packets=number_of_packets, variable_range=variable_range)
 
             ## pretty print and exiting
             post_processing(log, LOG_FILE_PATH)
