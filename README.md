@@ -85,7 +85,7 @@ bash-3.2# python3 fuzzer.py
 
 ### Videos
 
-> please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu sends packets that actually appear on the server (e.g., `connected with xxx.xxx.xxx.xxx`) when sending the SYN and SYNACK in TCP_send(). These do not appear when sending initiating TCP packets with macOS---this does not affect the functionality of the server or the fuzzer.
+> please note, many of these videos were made from macOS. There are slight differences when using Ubuntu. One difference is that Ubuntu may send packets that actually appear on the server (e.g., `connected with xxx.xxx.xxx.xxx`) when sending the SYN and SYNACK in TCP_send(). These do not appear when sending initiating TCP packets with macOS---this does not affect the functionality of the server or the fuzzer.
 
 - *packets from files* - IP layer and APPLICATION layer using payload from file (application, 'application_from_file.txt' and packet from file (IP, 'ip_from_file.txt'))
 
@@ -111,11 +111,14 @@ bash-3.2# python3 fuzzer.py
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20wireshark%20ttl.gif)
 
-for more examples, please see [link](https://github.com/nathanReitinger/4182-project1/blob/master/lowlevelgui.md)
 
 - *default payload pattern match (beginning only)* - send a series of packets with the payload as `deadbeef00deadbeef00deadbeef00` which should match to the server's hex pattern `deadbeef00` because of its start
 
 ![from files](https://github.com/nathanReitinger/4182-project1/blob/master/media/example%20-%20payload%20match%20start.gif)
+
+> please note, I did not show full fuzzing because it takes a long time (waits on timeout for valid-range but can't reach server). But the fuzzer, for example on the IP layer, runs through all possible values a field may have and also (in the beginning) runs through sending crazy values to each field--e.g., sending a dictionary. This would be accessed by selecting the default IP layer tests in the GUI
+
+for more examples, please see [link](https://github.com/nathanReitinger/4182-project1/blob/master/lowlevelgui.md)
 
 ## Error_Handling
 
