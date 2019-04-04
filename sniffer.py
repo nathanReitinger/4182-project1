@@ -9,7 +9,6 @@ import io
 #     if Raw in pkt:
 #         load = pkt[Raw].load
 #         if load == b'\x00' or load == b'\xff':
-#             print("PIZZZZZZZA")
 #             return True
 
 def hasCode(pkt):

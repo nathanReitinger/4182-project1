@@ -23,7 +23,7 @@
 #####################################################################
 ```
 
-### breakdown 
+### breakdown
     - version   ==> Version no. of Internet Protocol used
     - ihl       (Internet Header Length) ==> length of entire IP header
     - tos       (Type of Service, Differentiated Services Code Point)
@@ -101,7 +101,7 @@ M. 1 bit. Minimize monetary cost.
 ```
 
 ### length of packet [0,65535]
-- 16 bits 
+- 16 bits
 
 ### id of the packet [0,65535]
 - 16 bits
@@ -119,7 +119,7 @@ R	DF	MF
 
 
 ### frag [0,8191]
-- 13 bits 
+- 13 bits
 - used to direct the reassembly of a fragmented datagram.
 
 ### ttl [0,255]
@@ -276,7 +276,7 @@ Value	Protocol
 142	ROHC, RObust Header Compression.
 143
 -
-252	
+252
 253
 254	Experimentation and testing.
 255	reserved.
@@ -285,20 +285,20 @@ Value	Protocol
 ### chksum [0,65535]
 - 16 bits
 - one's complement checksum of the IP header and IP options.
-- **not fuzzed** 
+- **not fuzzed**
 
 ### src [0,255.255.255.255]
-- 32 bits 
-- **not fuzzed** 
+- 32 bits
+- **not fuzzed**
 
 ### dest [0,255.255.255.255]
-- 32 bits 
-- **not fuzzed** 
+- 32 bits
+- **not fuzzed**
 
 ### options
 
 ##### copy_flag [0,1]
-- 1 bit 
+- 1 bit
 - indicates if the option is to be copied into all fragments.
 
 ##### optclass [0,3]
@@ -312,7 +312,7 @@ Value	Description
 ```
 
 ##### option [0,31]
-- 5 bits 
+- 5 bits
 ```
 Option	Copy	Class	Value	Length	    Description
 0	0	0	0	1	    End of options list.
@@ -359,7 +359,7 @@ Option	Copy	Class	Value	Length	    Description
 
 # sniffing
 
-Here we can see how to filter and tag returned packets from the server [12]. 
+Here we can see how to filter and tag returned packets from the server [12].
 
 - **count**: number of packets to capture. 0 means infinity
 - **store**: wether to store sniffed packets or discard them
