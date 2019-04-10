@@ -1,8 +1,7 @@
 
 
-
-## this is a copy of the server which lives on Google cloud
-## to edit the server, use the installation guide and edit it directly
+## do not use this (outdated) version of the server
+## this is a older copy of the server which lives on Google cloud
 ## this file is here for illustrative purposes 
 
 
