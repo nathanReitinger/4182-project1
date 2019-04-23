@@ -66,7 +66,7 @@
 ### internet header length [0,15]
 - length of header in 32 bit words. minimum value for header is 5 (0101) and max is 15 (1111) [7]
 
-### type of service [0,225]
+### type of service [0,255]
 ```
 0	1	2	3	4	5	6	7
       Precedence	D	T	R	M	0
