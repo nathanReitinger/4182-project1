@@ -44,6 +44,8 @@ python3 fuzzer.py
 
 ### server
 
+> no longer available!
+
 1. navitage to https://615058023285.signin.aws.amazon.com/console
 2. for the "IAM user name" enter "public-4182"
 3. for the password, enter the one I provided via email
